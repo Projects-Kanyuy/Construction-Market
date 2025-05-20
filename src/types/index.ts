@@ -7,8 +7,8 @@ export interface CompanyData {
   email?: string;
   description?: string;
   logo?: string;
-  categories?: { id: number; name: string }[];
-  projects?: any[];
+  categories?: Category[];
+  projects?: Project[];
   website?: string;
   facebook?: string;
   instagram?: string;

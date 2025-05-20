@@ -1,9 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../../components/layout/Layout';
-import { categories } from '../../data/mockData';
+import { Category } from '../../types';
 import CategoryCard from '../../components/common/CategoryCard';
+import { fetchCategories } from '../../api/api';
 
 const CategoriesPage: React.FC = () => {
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    loadCategories();
+  }, [categories]);
+
+const loadCategories = async () => {
+  try {
+    const response = await fetchCategories();
+    setCategories(response.data);
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+  }
+}
   return (
     <Layout>
       <section className="bg-gray-50 py-20">

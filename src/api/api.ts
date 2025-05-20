@@ -15,6 +15,9 @@ export const fetchCompanies = () => instance.get('/companies');
 export const getCompanyByUsername = (username: string) => instance.get(`/companies/${username}`);
 
 export const getCompaniesByCategory = (categoryId: string | number) => instance.get(`/companies/category/${categoryId}`);
+export const getProjectsByCompany = (companyUsername: string) => instance.get(`/companies/${companyUsername}/projects`);
+
+export const getFeaturedCompanies = () => instance.get('/companies/view-count/featured');
 
 export const createCompany = (formData: Record<string, any>) =>
   instance.post('/companies', formData, {

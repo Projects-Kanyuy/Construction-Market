@@ -1,27 +1,19 @@
 import React, { useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { CompanyData } from '../../types';
 import Layout from '../../components/layout/Layout';
 import Button from '../../components/common/Button';
-import { getCompanyById, getCategoryById } from '../../data/mockData';
-import { addToRecentlyViewed } from '../../utils/recentlyViewedUtils';
-import { Phone, Mail, MapPin, Facebook, Twitter, Instagram, Linkedin, Calendar, ArrowLeft } from 'lucide-react';
+import { Phone, Mail, MapPin, Facebook, Twitter, Instagram, Linkedin, Calendar } from 'lucide-react';
 
 const CompanyDetailPage: React.FC = () => {
-  const { companyId } = useParams<{ companyId: string }>();
-  const company = companyId ? getCompanyById(companyId) : undefined;
-  const category = company ? getCategoryById(company.category) : undefined;
+  const location = useLocation(); 
+  const company: CompanyData  = location.state?.company;
   
   useEffect(() => {
-    // Record this view in localStorage when component mounts
-    if (companyId) {
-      addToRecentlyViewed(companyId);
-    }
-    
-    // Scroll to top on mount
     window.scrollTo(0, 0);
-  }, [companyId]);
+  }, [company]);
   
-  if (!company || !category) {
+  if (!company) {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-20">
@@ -36,25 +28,17 @@ const CompanyDetailPage: React.FC = () => {
     );
   }
   
-  const whatsappLink = `https://wa.me/${company.phone.replace(/\D/g, '')}`;
+  const whatsappLink = `https://wa.me/${company.phone?.replace(/\D/g, '')}`;
   
   return (
     <Layout>
       {/* Company Header */}
       <section className="bg-white">
         <div className="container mx-auto px-4 py-8">
-          <Link 
-            to={`/category/${company.category}`}
-            className="mb-6 inline-flex items-center text-sm font-medium text-[#3B546A] transition-colors hover:text-[#2A3E50]"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to {category.name}
-          </Link>
-          
           <div className="flex flex-col items-start gap-6 md:flex-row md:items-center">
             <div className="h-24 w-24 overflow-hidden rounded-lg bg-gray-200 md:h-32 md:w-32">
               <img 
-                src={company.logo} 
+                src={`http://localhost:5000${company.logo}`} 
                 alt={company.name}
                 className="h-full w-full object-cover"
               />
@@ -71,17 +55,22 @@ const CompanyDetailPage: React.FC = () => {
                   <span className="text-gray-700">{company.location}</span>
                 </div>
                 
-                <Link 
-                  to={`/category/${company.category}`}
-                  className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-200"
-                >
-                  {category.name}
-                </Link>
+                <div className="flex flex-wrap gap-2">
+                  {company.categories?.map(category => (
+                    <Link
+                      key={category.id}
+                      to={`/category/${category.id}`}
+                      className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-200"
+                    >
+                      {category.name}
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
             
             <div>
-              <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
+              <a href={company.phone ? whatsappLink : '#'} target="_blank" rel="noopener noreferrer">
                 <Button 
                   variant="secondary" 
                   size="large"
@@ -111,15 +100,15 @@ const CompanyDetailPage: React.FC = () => {
               
               {/* Past Projects */}
               <div className="mb-12 rounded-xl bg-white p-6 shadow-sm md:p-8">
-                <h2 className="mb-6 text-2xl font-bold text-gray-900">Past Projects</h2>
+                <h2 className="mb-6 text-2xl font-bold text-gray-900">Projects</h2>
                 
-                {company.pastProjects.length > 0 ? (
+                {company.projects && company.projects.length > 0 ? (
                   <div className="space-y-8">
-                    {company.pastProjects.map(project => (
+                    {company.projects.map(project => (
                       <div key={project.id} className="overflow-hidden rounded-lg border border-gray-200">
                         <div className="h-64 w-full overflow-hidden bg-gray-200">
                           <img 
-                            src={project.imageUrl} 
+                            src={`http://localhost:5000${project.image}`} 
                             alt={project.title}
                             className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
                           />
@@ -187,16 +176,16 @@ const CompanyDetailPage: React.FC = () => {
                 </div>
                 
                 {/* Social Media */}
-                {(company.socialMedia.facebook || 
-                  company.socialMedia.twitter || 
-                  company.socialMedia.instagram || 
-                  company.socialMedia.linkedin) && (
+                {(company.facebook || 
+                  company.twitter || 
+                  company.instagram || 
+                  company.linkedin) && (
                   <div className="mt-8">
                     <h3 className="mb-4 text-lg font-medium text-gray-900">Social Media</h3>
                     <div className="flex space-x-4">
-                      {company.socialMedia.facebook && (
+                      {company.facebook && (
                         <a 
-                          href={company.socialMedia.facebook} 
+                          href={company.facebook} 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
@@ -205,9 +194,9 @@ const CompanyDetailPage: React.FC = () => {
                         </a>
                       )}
                       
-                      {company.socialMedia.twitter && (
+                      {company.twitter && (
                         <a 
-                          href={company.socialMedia.twitter} 
+                          href={company.twitter} 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
@@ -216,9 +205,9 @@ const CompanyDetailPage: React.FC = () => {
                         </a>
                       )}
                       
-                      {company.socialMedia.instagram && (
+                      {company.instagram && (
                         <a 
-                          href={company.socialMedia.instagram} 
+                          href={company.instagram} 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
@@ -227,9 +216,9 @@ const CompanyDetailPage: React.FC = () => {
                         </a>
                       )}
                       
-                      {company.socialMedia.linkedin && (
+                      {company.linkedin && (
                         <a 
-                          href={company.socialMedia.linkedin} 
+                          href={company.linkedin} 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"

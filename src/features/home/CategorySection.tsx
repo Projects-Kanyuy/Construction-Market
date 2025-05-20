@@ -8,7 +8,7 @@ const CategorySection: React.FC = () => {
 
   useEffect(() => {
     fetchCategoriesData();
-  }, [])
+  }, [categories])
 
   const fetchCategoriesData = async () => {
     try {

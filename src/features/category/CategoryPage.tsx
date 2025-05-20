@@ -5,7 +5,6 @@ import SearchBar from '../../components/common/SearchBar';
 import CompanyCard from '../../components/common/CompanyCard';
 import { CompanyData } from '../../types';
 import { getCompaniesByCategory } from '../../api/api';
-import { Filter } from 'lucide-react';
 
 const CategoryPage: React.FC = () => {
   const location = useLocation();
@@ -14,21 +13,22 @@ const CategoryPage: React.FC = () => {
   const [companies, setCompanies] = useState<CompanyData[]>([]);
   const [filteredCompanies, setFilteredCompanies] = useState<CompanyData[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    if (categoryId) {
       loadCompanies();
-      setFilteredCompanies(companies);
-    }
   }, [categoryId]);
   
   const loadCompanies = async () => {
-    if (!categoryId) return;
+    setLoading(true);
     try {
-      const response = await getCompaniesByCategory(categoryId);
+      const response = await getCompaniesByCategory(categoryId!);
       setCompanies(response.data);
+      setFilteredCompanies(response.data);
     } catch (error) {
       console.error('Error fetching companies:', error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -50,23 +50,13 @@ const CategoryPage: React.FC = () => {
     setFilteredCompanies(filtered);
   };
   
-  if (!categoryId) {
-    return (
-      <Layout>
-        <div className="container mx-auto px-4 py-20">
-          <h1 className="mb-8 text-3xl font-bold text-center">Category not found</h1>
-        </div>
-      </Layout>
-    );
-  }
-  
   return (
     <Layout>
       {/* Hero section with category info */}
       <section className="relative min-h-[300px] overflow-hidden">
         <div className="absolute inset-0">
           <img 
-            src={category.imageUrl} 
+            src={`http://localhost:5000${category.image}`} 
             alt={category.name}
             className="h-full w-full object-cover"
           />
@@ -95,23 +85,23 @@ const CategoryPage: React.FC = () => {
                 placeholder={`Search ${category.name} companies...`}
               />
             </div>
-            
-            <button className="flex items-center rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 transition-colors hover:bg-gray-50">
-              <Filter className="mr-2 h-5 w-5" />
-              <span>Filter</span>
-            </button>
           </div>
         </div>
       </section>
       
       {/* Companies list */}
-      <section className="bg-gray-50 py-12 sm:py-16">
+      {loading ? (
+        <p className="m-4 text-xl font-bold text-gray-900">
+          Loading companies...
+        </p>
+      ) : (
+        <section className="bg-gray-50 py-12 sm:py-16">
         <div className="container mx-auto px-4">
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900">
               {filteredCompanies.length > 0 
                 ? `${filteredCompanies.length} Companies Found`
-                : 'No Companies Found'}
+                : 'No Companies Found'} 
             </h2>
             {searchQuery && (
               <p className="mt-2 text-gray-600">
@@ -136,6 +126,8 @@ const CategoryPage: React.FC = () => {
           )}
         </div>
       </section>
+      )}
+      
     </Layout>
   );
 };

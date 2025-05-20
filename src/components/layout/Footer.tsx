@@ -1,10 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Building2, Facebook, Twitter, Instagram, Linkedin, Mail, Phone } from 'lucide-react';
+import { Category } from '../../types';
+import { fetchCategories } from '../../api/api';
 
 const Footer: React.FC = () => {
+  const [categories, setCategories] = useState<Category[]>([])
   const currentYear = new Date().getFullYear();
   
+  useEffect(() => {
+    loadCategories()
+  }, [categories])
+  
+  const loadCategories = async () => {
+    try {
+      const response = await fetchCategories();
+      setCategories(response.data);
+    } catch (error) {
+      console.log('Error fetching categories:', error);
+    }
+  }
   return (
     <footer className="bg-[#1A2531] text-white">
       <div id="about" className="container mx-auto px-4 py-12">
@@ -38,11 +53,11 @@ const Footer: React.FC = () => {
           <div>
             <h3 className="mb-4 text-lg font-semibold">Categories</h3>
             <ul className="space-y-2">
-              <li><Link to="/category/residential" className="text-gray-300 transition-colors hover:text-[#FF9D42]">Residential Construction</Link></li>
-              <li><Link to="/category/commercial" className="text-gray-300 transition-colors hover:text-[#FF9D42]">Commercial Construction</Link></li>
-              <li><Link to="/category/industrial" className="text-gray-300 transition-colors hover:text-[#FF9D42]">Industrial Construction</Link></li>
-              <li><Link to="/category/renovation" className="text-gray-300 transition-colors hover:text-[#FF9D42]">Renovation & Remodeling</Link></li>
-              <li><Link to="/category/infrastructure" className="text-gray-300 transition-colors hover:text-[#FF9D42]">Infrastructure</Link></li>
+              {categories.map((category) => (
+                <li key={category.id}>
+                  <Link to={`/category/${category.id}`} className="text-gray-300 transition-colors hover:text-[#FF9D42]">{category.name}</Link>
+                </li>
+              ))}
             </ul>
           </div>
           

@@ -4,7 +4,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import { formatDate } from "../../../utils/formateDate";
 import { Modal } from "../../../components/common/Modal";
 import toast from "react-hot-toast";
-import { X } from "lucide-react";
+import { Pencil, X } from "lucide-react";
 import Button from "../../../components/common/Button";
 
 interface CompanyData {
@@ -38,8 +38,10 @@ const CompanyProfile = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   useEffect(() => {
-    loadCompany();
-  }, []);
+    if (user?.username) {
+      loadCompany();
+    }
+  }, [user?.username]);
 
   const loadCompany = async () => {
     setLoading(true);
@@ -223,6 +225,17 @@ const CompanyProfile = () => {
             </div>
           </div>
         )}
+
+        <div className="flex justify-end mt-8">
+          <Button 
+            variant="primary" 
+            onClick={handleEditCompany}
+            className="flex items-center gap-2"
+          >
+            <Pencil size={16} /> 
+            Edit Profile
+          </Button>
+        </div>
       </div>
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
