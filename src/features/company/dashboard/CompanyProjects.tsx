@@ -57,11 +57,6 @@ const CompanyProjects: React.FC = () => {
       formData.append("image", imageFile);
     }
 
-    console.log("FormData entries:");
-    for (const [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
-
     setIsLoading(true);
 
     try {
@@ -77,7 +72,6 @@ const CompanyProjects: React.FC = () => {
           )
         );
       } else {
-        console.log("User company ID:", user.companyId);
         const response = await createProject(Number(user.companyId), form);
         setProjects([response.data, ...(projects ?? [])]);
       }

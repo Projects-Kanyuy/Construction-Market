@@ -20,7 +20,6 @@ import AdminProjects from "./features/admin/AdminProjects";
 import CompanyDashboard from "./features/company/dashboard/CompanyDashboard";
 import CompanyProfile from "./features/company/dashboard/CompanyProfile";
 import CompanyProjects from "./features/company/dashboard/CompanyProjects";
-import ProtectedRoute from "./context/ProtectedRoute";
 
 function App() {
   return (
@@ -38,14 +37,7 @@ function App() {
           <Route path="/signin" element={<SignInPage />} />
 
           {/* Admin Routes */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          >
+          <Route path="/admin" element={<AdminDashboard />}>
             <Route index element={<AdminUsers />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="companies" element={<AdminCompanies />} />
@@ -54,7 +46,7 @@ function App() {
           </Route>
 
           {/* Company Dashboard Routes */}
-          <Route path="/dashboard" element={<ProtectedRoute><CompanyDashboard /></ProtectedRoute>}>
+          <Route path="/dashboard" element={<CompanyDashboard />}>
             <Route index element={<CompanyProfile />} />
             <Route path="profile" element={<CompanyProfile />} />
             <Route path="projects" element={<CompanyProjects />} />
