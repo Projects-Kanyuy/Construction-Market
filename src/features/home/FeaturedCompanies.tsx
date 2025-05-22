@@ -15,7 +15,7 @@ const FeaturedCompanies: React.FC = () => {
   const loadCompanies = async () => {
     try {
       const response = await fetchCompanies();
-      setCompanies(response.data);
+      setCompanies(response.data.slice(0, 10));
     } catch (error) {
       console.error('Error fetching companies:', error);
     }

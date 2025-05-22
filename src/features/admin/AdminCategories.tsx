@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
 import Button from "../../components/common/Button";
 import { Plus, Pencil, Trash2, LayoutGrid, X } from "lucide-react";
 import { Modal } from "../../components/common/Modal";
+import { AuthContext } from "../../context/AuthContext";
 import {
   fetchCategories,
   createCategory,
@@ -22,6 +23,7 @@ interface CategoryData {
 }
 
 const AdminCategories = () => {
+  const { user } = useContext(AuthContext);
   const [categories, setCategories] = useState<CategoryData[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -164,12 +166,15 @@ const AdminCategories = () => {
                   >
                     <Pencil size={16} />
                   </button>
-                  <button
+                  {user.role === "SUPER_ADMIN" && (
+                    <button
                     onClick={() => handleDeleteCategory(category.id)}
                     className="rounded p-1 text-red-600 hover:bg-gray-100"
                   >
                     <Trash2 size={16} />
                   </button>
+                  )}
+                  
                 </div>
               </div>
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Layout from '../../components/layout/Layout';
 import Button from '../../components/common/Button';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 
 const ContactPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -19,6 +20,10 @@ const ContactPage: React.FC = () => {
 
   return (
     <Layout>
+      <Helmet>
+        <title>Contact Us | CProMart</title>
+        <meta name="description" content="Reach out to us for inquiries, support, or feedback." />
+      </Helmet>
       <div className="bg-gray-50">
         {/* Hero Section */}
         <div className="relative overflow-hidden bg-[#1A2531] py-24">

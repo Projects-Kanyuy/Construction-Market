@@ -55,7 +55,7 @@ export const updateCategory = (id: string | number, formData: Record<string, any
 
 export const deleteCategory = (id: string | number) => instance.delete(`/categories/${id}`);
 
-export const fetchProjects = (id: string | number) => instance.get(`/companies/${id}/projects`);
+export const fetchProjects = (username: string) => instance.get(`/companies/${username}/projects`);
 export const fetchAllProjects = () => instance.get('/companies/projects');
 export const createProject = (id: string | number, formData: Record<string, any>) => instance.post(`/companies/${id}/projects`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },

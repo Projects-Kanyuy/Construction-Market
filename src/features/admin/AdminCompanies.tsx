@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import toast from 'react-hot-toast';
 import Button from '../../components/common/Button';
 import { Plus, Pencil, Trash2, Building2, ExternalLink, X } from 'lucide-react';
 import { Modal } from '../../components/common/Modal';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
 import { 
   fetchCompanies,
   createCompany, 
@@ -35,6 +36,7 @@ interface CompanyData {
 }
 
 const AdminCompanies = () => {
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [companies, setCompanies] = useState<CompanyData[]>([]);
   const [categories, setCategories] = useState<Record<string, any>>([]);
@@ -303,12 +305,14 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                   >
                     <Pencil size={16} />
                   </button>
-                  <button
+                  {user.role === 'SUPER_ADMIN' && (
+                    <button
                     onClick={() => handleDeleteCompany(company.id)}
                     className="text-red-600 hover:text-red-900"
                   >
                     <Trash2 size={16} />
                   </button>
+                  )}
                 </td>
               </tr>
             ))}

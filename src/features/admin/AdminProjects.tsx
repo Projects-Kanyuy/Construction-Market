@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Button from '../../components/common/Button';
 import { Plus, Pencil, Trash2, Calendar, X } from 'lucide-react';
 import { Modal } from '../../components/common/Modal';
 import { fetchProjects, createProject, updateProject, deleteProject, fetchAllProjects } from '../../api/api';
+import { AuthContext } from '../../context/AuthContext';
 
 interface ProjectData {
   id: string;
@@ -20,6 +21,7 @@ interface ProjectData {
 }
 
 const AdminProjects = () => {
+  const { user } = useContext(AuthContext);
   const location = useLocation();
   const { company } = location.state || {};
   const [projects, setProjects] = useState<ProjectData[]>([]);
@@ -40,7 +42,7 @@ const AdminProjects = () => {
   const loadProjects = async () => {
     setLoading(true);
     try {
-      const response = company ? await fetchProjects(company?.id) : await fetchAllProjects();
+      const response = company ? await fetchProjects(company?.username) : await fetchAllProjects();
       setProjects(response.data);
     } catch (error) {
       console.error('Error loading projects:', error);
@@ -198,12 +200,15 @@ const AdminProjects = () => {
                       >
                         <Pencil size={16} />
                       </button>
-                      <button
+                      {user.role === 'SUPER_ADMIN' && (
+                        <button
                         onClick={() => handleDeleteProject(project)}
                         className="text-red-600 hover:text-red-900"
                       >
                         <Trash2 size={16} />
                       </button>
+                      )}
+                      
                     </td>
                     </>
                   )}

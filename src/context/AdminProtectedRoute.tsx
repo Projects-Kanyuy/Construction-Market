@@ -1,10 +1,10 @@
 import { Navigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from './AuthContext';
 import { ReactNode, useContext } from 'react';
 
 const ProtectedRoute = ({ children }: {children: ReactNode}) => {
-    const { isAuthenticated } = useContext(AuthContext);
-  if (!isAuthenticated) {
+    const { user } = useContext(AuthContext);
+  if (!user || user.role !== 'ADMIN' && user.role !== 'SUPER_ADMIN') {
     return <Navigate to="/" replace />;
   }
 

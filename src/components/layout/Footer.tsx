@@ -28,10 +28,10 @@ const Footer: React.FC = () => {
           <div>
             <Link to="/" className="mb-4 flex items-center">
               <Building2 className="mr-2 h-8 w-8 text-[#FF9D42]" />
-              <span className="text-xl font-bold">Construction Market</span>
+              <span className="text-xl font-bold">CProMart</span>
             </Link>
             <p className="mb-4 text-gray-300">
-              Connecting you with top construction companies across various specialties.
+              Connecting you with top construction companies across various specialties in Cameroon.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-300 transition-colors hover:text-[#FF9D42]">
@@ -68,8 +68,8 @@ const Footer: React.FC = () => {
               <li><Link to="/" className="text-gray-300 transition-colors hover:text-[#FF9D42]">Home</Link></li>
               <li><Link to="/about" className="text-gray-300 transition-colors hover:text-[#FF9D42]">About Us</Link></li>
               <li><Link to="/contact" className="text-gray-300 transition-colors hover:text-[#FF9D42]">Contact</Link></li>
-              <li><Link to="/privacy" className="text-gray-300 transition-colors hover:text-[#FF9D42]">Privacy Policy</Link></li>
-              <li><Link to="/terms" className="text-gray-300 transition-colors hover:text-[#FF9D42]">Terms of Service</Link></li>
+              {/* <li><Link to="/privacy" className="text-gray-300 transition-colors hover:text-[#FF9D42]">Privacy Policy</Link></li> */}
+              {/* <li><Link to="/terms" className="text-gray-300 transition-colors hover:text-[#FF9D42]">Terms of Service</Link></li> */}
             </ul>
           </div>
           
@@ -79,11 +79,11 @@ const Footer: React.FC = () => {
             <ul className="space-y-3">
               <li className="flex items-center">
                 <Mail className="mr-2 h-5 w-5 text-[#FF9D42]" />
-                <span className="text-gray-300">info@constructionmarket.com</span>
+                <span className="text-gray-300">cpromart1@gmail.com</span>
               </li>
               <li className="flex items-center">
                 <Phone className="mr-2 h-5 w-5 text-[#FF9D42]" />
-                <span className="text-gray-300">+1 (800) 555-CONS</span>
+                <span className="text-gray-300">+237 674 77 25 69</span>
               </li>
             </ul>
           </div>
@@ -91,7 +91,7 @@ const Footer: React.FC = () => {
         
         <div className="mt-12 border-t border-gray-700 pt-8 text-center">
           <p className="text-sm text-gray-400">
-            &copy; {currentYear} Construction Market. All rights reserved.
+            &copy; {currentYear} Construction Professionals Marketplace. All rights reserved.
           </p>
         </div>
       </div>

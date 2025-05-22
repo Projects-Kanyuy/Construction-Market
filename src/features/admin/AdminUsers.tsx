@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import toast from 'react-hot-toast';
 import Button from '../../components/common/Button';
 import { Plus, Pencil, Trash2, User, X } from 'lucide-react';
 import { Modal } from '../../components/common/Modal';
 import { listUsers, updateUser, deleteUser, registerUser } from '../../api/api';
 import { formatDate } from '../../utils/formateDate'
+import { AuthContext } from '../../context/AuthContext';
 
 interface UserData {
   id: number;
@@ -12,13 +13,14 @@ interface UserData {
   name?: string;
   contact?: string;
   email?: string;
-  role: 'ADMIN' | 'USER' | 'COMPANY_ADMIN';
+  role: 'ADMIN' | 'USER' | 'COMPANY_ADMIN' | 'SUPER_ADMIN';
   location?: string;
   createdAt: string;
 }
 
 
 const AdminUsers = () => {
+  const { user } = useContext(AuthContext);
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -195,7 +197,8 @@ const confirmDelete = async () => {
                     {formatDate(user.createdAt)}
                   </span>
                 </td>
-                <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
+                {user.role == 'SUPER_ADMIN' && (
+                  <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                   <button
                     onClick={() => handleEditUser(user)}
                     className="mr-2 text-indigo-600 hover:text-indigo-900"
@@ -209,6 +212,7 @@ const confirmDelete = async () => {
                     <Trash2 size={16} />
                   </button>
                 </td>
+                )}
               </tr>
             ))}
           </tbody>
@@ -302,6 +306,7 @@ const confirmDelete = async () => {
                 >
                   <option value="USER">USER</option>
                   <option value="ADMIN">ADMIN</option>
+                  <option value="SUPER_ADMIN">SUPER ADMIN</option>
                   <option value="COMPANY_ADMIN">COMPANY_ADMIN</option>
                 </select>
               </div>

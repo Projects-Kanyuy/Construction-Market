@@ -4,6 +4,7 @@ import { CompanyData } from '../../types';
 import Layout from '../../components/layout/Layout';
 import Button from '../../components/common/Button';
 import { Phone, Mail, MapPin, Facebook, Twitter, Instagram, Linkedin, Calendar } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 
 const CompanyDetailPage: React.FC = () => {
   const location = useLocation(); 
@@ -32,6 +33,10 @@ const CompanyDetailPage: React.FC = () => {
   
   return (
     <Layout>
+      <Helmet>
+          <title>{`Company - ${company.name} | CProMart`}</title>
+          <meta name="description" content={`Learn more about ${company.name}, their services, and projects.`} />
+        </Helmet>
       {/* Company Header */}
       <section className="bg-white">
         <div className="container mx-auto px-4 py-8">

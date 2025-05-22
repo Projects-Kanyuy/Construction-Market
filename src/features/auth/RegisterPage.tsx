@@ -6,6 +6,7 @@ import Button from '../../components/common/Button';
 import { Building2 } from 'lucide-react';
 
 import { registerUser, createCompany, fetchCategories } from '../../api/api'
+import { Helmet } from 'react-helmet-async';
 
 const RegisterPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'yourself' | 'company'>('yourself');
@@ -108,6 +109,10 @@ const RegisterPage: React.FC = () => {
 
   return (
     <Layout>
+      <Helmet>
+        <title>Register | CProMart</title>
+        <meta name="description" content="Join Construction Market and connect with quality construction companies." />
+      </Helmet>
       <div className="bg-gray-50 py-16 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl">
           <div className="text-center">
@@ -179,7 +184,7 @@ const RegisterPage: React.FC = () => {
                   <Input label="Description" value={companyForm.description} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCompanyForm({ ...companyForm, description: e.target.value })} />
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Logo</label>
-                    <input type="file" accept="image/*" onChange={e => setCompanyForm({ ...companyForm, logo: e.target.files?.[0] || null })} />
+                    <input required type="file" accept="image/*" onChange={e => setCompanyForm({ ...companyForm, logo: e.target.files?.[0] || null })} />
                   </div>
                   <Input label="Facebook" value={companyForm.facebook} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCompanyForm({ ...companyForm, facebook: e.target.value })} />
                   <Input label="Instagram" value={companyForm.instagram} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCompanyForm({ ...companyForm, instagram: e.target.value })} />

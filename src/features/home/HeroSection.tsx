@@ -1,36 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../../components/common/Button';
 import { AuthContext } from '../../context/AuthContext';
-import { getFeaturedCompanies } from '../../api/api';
-import { CompanyData } from '../../types';
-import { incrementCompanyViewCount } from '../../api/api';
-
-const incrementViewCount = async (companyId: number) => {
-  try {
-    await incrementCompanyViewCount(companyId);
-    console.log('count updated successfully!');
-  } catch (error) {
-    console.log('Error incrementing view count:', error);
-  }
-}
 
 const HeroSection: React.FC = () => {
-  const [featuredCompany, setFeaturedCompany] = useState<CompanyData | null>(null)
     const { isAuthenticated } = useContext(AuthContext);
-
-    useEffect(() => {
-      loadFeaturedCompany();
-    }, [featuredCompany])
-
-    const loadFeaturedCompany = async () => {
-      try {
-        const response = await getFeaturedCompanies();
-        setFeaturedCompany(response.data);
-    } catch (error) {
-        console.error('Error fetching featured company:', error);
-      }
-    }
   
   return (
     <section className="relative overflow-hidden bg-[#1A2531] py-20 md:py-28">
@@ -48,17 +22,17 @@ const HeroSection: React.FC = () => {
             </h1>
             
             <p className="mb-8 text-lg text-gray-300 md:text-xl">
-              Connect with top construction companies specialized in residential, commercial, and industrial projects.
+              Partner with top construction pros for residential, commercial, and industrial projects—anywhere in Cameroon.
             </p>
             
             {!isAuthenticated && (
 <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 md:justify-center lg:justify-start">
-              <Link to="/register">
+              <Link to="/categories">
                 <Button 
                   variant="primary" 
                   size="large"
                 >
-                  Register Your Company
+                  Get Started
                 </Button>
               </Link>
             </div>
@@ -68,27 +42,10 @@ const HeroSection: React.FC = () => {
           
           <div className="relative hidden overflow-hidden rounded-xl shadow-2xl lg:block">
             <img 
-              src={`http://localhost:5000${featuredCompany?.logo}`}
-              alt={featuredCompany?.name}
+              src='src\assets\reunification_monument.jpg'
+              alt='Caeroon pride'
               className="h-full w-full object-cover object-center"
-            />
-            
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-            {featuredCompany && (
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-              <span className="mb-1 block text-sm font-medium text-[#FF9D42]">Featured Company</span>
-              <h3 className="mb-2 text-xl font-bold text-white">{featuredCompany?.name}</h3>
-              <Link 
-                to={`/company/${featuredCompany?.id}`}
-                state={{ company: featuredCompany }} 
-                onClick={() => incrementViewCount(featuredCompany?.id)}
-                className="flex items-center text-sm font-medium text-white/80 transition-colors hover:text-white"
-              >
-                Learn more 
-              </Link>
-            </div>
-            )}
-            
+            />          
           </div>
         </div>
       </div>

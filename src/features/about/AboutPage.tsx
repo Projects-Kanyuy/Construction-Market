@@ -1,10 +1,15 @@
 import React from 'react';
 import Layout from '../../components/layout/Layout';
 import { Building2, Users, Shield, Trophy } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 
 const AboutPage: React.FC = () => {
   return (
     <Layout>
+      <Helmet>
+        <title>About Us | CProMart</title>
+        <meta name="description" content="Learn more about Construction Market and our mission to connect quality construction companies with clients." />
+      </Helmet>
       <div className="bg-gray-50">
         {/* Hero Section */}
         <div className="relative overflow-hidden bg-[#1A2531] py-24">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -6,8 +6,11 @@ import Layout from '../../components/layout/Layout';
 import Button from '../../components/common/Button';
 import { LogIn } from 'lucide-react';
 import { loginUser } from '../../api/api';
+import { AuthContext } from '../../context/AuthContext';
+import { Helmet } from 'react-helmet-async';
 
 const SignInPage: React.FC = () => {
+  const { login } = useContext(AuthContext); 
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -24,8 +27,7 @@ const SignInPage: React.FC = () => {
       const res = await loginUser(formData);
       const { token, user } = res.data;
 
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+      login(user, token);
 
       toast.success("Login successful!");
 
@@ -51,6 +53,10 @@ const SignInPage: React.FC = () => {
 
   return (
     <Layout>
+      <Helmet>
+        <title>Sign In | CProMart</title>
+        <meta name="description" content="Sign in to your Construction Market account." />
+      </Helmet>
       <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-md space-y-8">
           <div>

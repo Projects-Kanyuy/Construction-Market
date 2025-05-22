@@ -39,7 +39,7 @@ const Header: React.FC = () => {
       <div className="container mx-auto flex items-center justify-between px-4">
         <Link to="/" className="flex items-center">
           <Building2 className={`mr-2 h-7 w-7 text-[#FF9D42]`} />
-          <span className={`text-xl font-bold ${textColor}`}>Construction Market</span>
+          <span className={`text-xl font-bold ${textColor}`}>CProMart</span>
         </Link>
         
         <nav className="hidden md:block">
