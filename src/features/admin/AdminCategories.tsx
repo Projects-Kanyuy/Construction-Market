@@ -181,7 +181,7 @@ const AdminCategories = () => {
               <div className="mb-2 flex h-40 w-full items-center justify-center rounded-lg bg-gray-50">
                 {category.image ? (
                   <img
-                    src={`http://localhost:5000${category.image}`}
+                    src={`https://api.cpromart.site${category.image}`}
                     alt={category.name}
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;

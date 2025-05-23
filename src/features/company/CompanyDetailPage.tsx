@@ -43,7 +43,7 @@ const CompanyDetailPage: React.FC = () => {
           <div className="flex flex-col items-start gap-6 md:flex-row md:items-center">
             <div className="h-24 w-24 overflow-hidden rounded-lg bg-gray-200 md:h-32 md:w-32">
               <img 
-                src={`http://localhost:5000${company.logo}`} 
+                src={`https://api.cpromart.site${company.logo}`} 
                 alt={company.name}
                 className="h-full w-full object-cover"
               />
@@ -113,7 +113,7 @@ const CompanyDetailPage: React.FC = () => {
                       <div key={project.id} className="overflow-hidden rounded-lg border border-gray-200">
                         <div className="h-64 w-full overflow-hidden bg-gray-200">
                           <img 
-                            src={`http://localhost:5000${project.image}`} 
+                            src={`https://api.cpromart.site${project.image}`} 
                             alt={project.title}
                             className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
                           />

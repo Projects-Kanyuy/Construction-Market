@@ -147,7 +147,7 @@ const CompanyProjects: React.FC = () => {
             >
               <div className="relative h-48 overflow-hidden">
                 <img
-                  src={`http://localhost:5000${project.image}`}
+                  src={`https://api.cpromart.site${project.image}`}
                   alt={project.title}
                   className="h-full w-full object-cover"
                 />

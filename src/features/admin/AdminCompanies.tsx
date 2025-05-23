@@ -240,7 +240,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
                       {company.logo ? (
                         <img 
-                          src={`http://localhost:5000${company.logo}`} 
+                          src={`https://api.cpromart.site${company.logo}`} 
                           alt={company.name}
                           className="h-full w-full rounded-full object-cover"
                         />

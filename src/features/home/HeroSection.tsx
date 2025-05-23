@@ -42,7 +42,7 @@ const HeroSection: React.FC = () => {
           
           <div className="relative hidden overflow-hidden rounded-xl shadow-2xl lg:block">
             <img 
-              src='src\assets\reunification_monument.jpg'
+              src="src/assets/reunification_monument.jpg"
               alt='Caeroon pride'
               className="h-full w-full object-cover object-center"
             />          

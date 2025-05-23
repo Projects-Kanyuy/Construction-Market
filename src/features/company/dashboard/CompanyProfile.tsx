@@ -113,7 +113,7 @@ const CompanyProfile = () => {
           {company.logo && (
             <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">
               <img
-                src={`http://localhost:5000${company.logo}`}
+                src={`https://api.cpromart.site${company.logo}`}
                 alt={company.name}
                 className="w-full h-full object-cover"
               />

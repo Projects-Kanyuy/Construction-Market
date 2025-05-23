@@ -16,7 +16,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
     >
       <div className="relative h-64 overflow-hidden">
         <img 
-          src={`http://localhost:5000${category.image}`} 
+          src={`https://api.cpromart.site${category.image}`} 
           alt={category.name}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />

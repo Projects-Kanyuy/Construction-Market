@@ -24,7 +24,7 @@ const CompanyCard: React.FC<CompanyCardProps> = ({ company }) => {
     <div className="group flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-md transition-all duration-300 hover:shadow-lg">
       <div className="relative h-48 overflow-hidden bg-gray-100">
         <img 
-          src={`http://localhost:5000${company.logo}`} 
+          src={`https://api.cpromart.site${company.logo}`} 
           alt={company.name}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
