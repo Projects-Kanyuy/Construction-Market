@@ -4,10 +4,10 @@ import { ReactNode, useContext } from 'react';
 
 const ProtectedRoute = ({ children }: {children: ReactNode}) => {
     const { user } = useContext(AuthContext);
-  if (!user || user.role !== 'ADMIN' && user.role !== 'SUPER_ADMIN') {
+    if (!user || (user.role !== 'ADMIN' && user.role !== 'SUPER_ADMIN')) {
     return <Navigate to="/" replace />;
   }
-
+console.log(`${user.role}`);
   return children;
 };
 

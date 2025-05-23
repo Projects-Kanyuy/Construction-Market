@@ -33,6 +33,7 @@ const SignInPage: React.FC = () => {
 
       switch (user.role) {
       case 'ADMIN':
+      case 'SUPER_ADMIN':
         navigate('/admin');
         break;
       case 'COMPANY_ADMIN':
