@@ -10,7 +10,7 @@ interface CategoryCardProps {
 const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
   return (
     <Link 
-      to={`/category/${category.id}`}
+      to={`/category/${category.name}`}
       state={{ category }}
       className="group relative overflow-hidden rounded-xl shadow-md transition-all duration-300 hover:shadow-lg"
     >

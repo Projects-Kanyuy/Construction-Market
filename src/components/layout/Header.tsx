@@ -1,13 +1,11 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation} from 'react-router-dom';
 import { Menu, X, Building2, Search } from 'lucide-react';
-import { AuthContext } from '../../context/AuthContext';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
-  const { user, logout, isAuthenticated } = useContext(AuthContext);
   
   useEffect(() => {
     setIsMenuOpen(false);
@@ -76,7 +74,7 @@ const Header: React.FC = () => {
                 Contact
               </Link>
             </li>
-            <li>
+            {/* <li>
               {isAuthenticated ? (
                 <div>
                   {user.role == "USER" ? (<button className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`} onClick={logout}>Logout</button>) :
@@ -97,7 +95,7 @@ const Header: React.FC = () => {
                 Sign In
               </Link>
               )}
-            </li>
+            </li> */}
           </ul>
         </nav>
         
@@ -154,7 +152,7 @@ const Header: React.FC = () => {
                   Contact
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 {isAuthenticated ? (
                   <div>
                     {user.role == "USER" ? (<button className="block text-lg font-medium text-gray-900" onClick={() => { setIsMenuOpen(false); logout();}}>Logout</button>) : (
@@ -176,7 +174,7 @@ const Header: React.FC = () => {
                   Sign In
                 </Link>
                 )}
-              </li>
+              </li> */}
             </ul>
             
             <div className="mt-6">

@@ -64,7 +64,8 @@ const CompanyDetailPage: React.FC = () => {
                   {company.categories?.map(category => (
                     <Link
                       key={category.id}
-                      to={`/category/${category.id}`}
+                      to={`/category/${category.name}`}
+                      state={{ category }}
                       className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-200"
                     >
                       {category.name}

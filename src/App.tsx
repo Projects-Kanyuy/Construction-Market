@@ -1,14 +1,11 @@
 import { Toaster } from "react-hot-toast";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./features/home/HomePage";
 import CategoryPage from "./features/category/CategoryPage";
 import CompanyDetailPage from "./features/company/CompanyDetailPage";
 import CategoriesPage from "./features/categories/CategoriesPage";
 import ContactPage from "./features/contact/ContactPage";
 import AboutPage from "./features/about/AboutPage";
-import RegisterPage from "./features/auth/RegisterPage";
-import SignInPage from "./features/auth/SignInPage";
-
 // Admin Dashboard
 import AdminDashboard from "./features/admin/AdminDashboard";
 import AdminUsers from "./features/admin/AdminUsers";
@@ -35,8 +32,6 @@ function App() {
           <Route path="/company/:companyId" element={<CompanyDetailPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/signin" element={<SignInPage />} />
 
           {/* Admin Routes */}
           <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>}>
@@ -55,7 +50,7 @@ function App() {
           </Route>
 
           {/* Redirect all other routes to home */}
-          <Route path="*" element={<HomePage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
     </>

@@ -39,7 +39,7 @@ const CompanyCard: React.FC<CompanyCardProps> = ({ company }) => {
         
         <div className="mt-auto flex items-center justify-between">
           <Link 
-            to={`/company/${company.id}`}
+            to={`/company/${company.name}`}
             state={{ company }}
             className="text-sm font-medium text-[#3B546A] transition-colors hover:text-[#2A3E50]"
             onClick={() => incrementViewCount(company.id)}

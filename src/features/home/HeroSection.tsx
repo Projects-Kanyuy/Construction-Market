@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../../components/common/Button';
 import { AuthContext } from '../../context/AuthContext';
+import monument from '../../assets/reunification_monument.jpg';
 
 const HeroSection: React.FC = () => {
     const { isAuthenticated } = useContext(AuthContext);
@@ -42,8 +43,8 @@ const HeroSection: React.FC = () => {
           
           <div className="relative hidden overflow-hidden rounded-xl shadow-2xl lg:block">
             <img 
-              src="src/assets/reunification_monument.jpg"
-              alt='Caeroon pride'
+              src={monument}
+              alt='Cameroon pride'
               className="h-full w-full object-cover object-center"
             />          
           </div>

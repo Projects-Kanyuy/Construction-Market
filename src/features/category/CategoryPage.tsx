@@ -1,35 +1,47 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
 import SearchBar from "../../components/common/SearchBar";
 import CompanyCard from "../../components/common/CompanyCard";
-import { CompanyData } from "../../types";
-import { getCompaniesByCategory } from "../../api/api";
+import { Category, CompanyData } from "../../types";
+import { fetchCategories, getCompaniesByCategory } from "../../api/api";
 import { Helmet } from "react-helmet-async";
 
 const CategoryPage: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const category = location.state?.category;
-  const { categoryId } = useParams<{ categoryId: string }>();
   const [companies, setCompanies] = useState<CompanyData[]>([]);
   const [filteredCompanies, setFilteredCompanies] = useState<CompanyData[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     loadCompanies();
-  }, [categoryId]);
+    loadCategories();
+  }, [category.id]);
 
   const loadCompanies = async () => {
     setLoading(true);
     try {
-      const response = await getCompaniesByCategory(categoryId!);
+      const response = await getCompaniesByCategory(category.id!);
       setCompanies(response.data);
       setFilteredCompanies(response.data);
     } catch (error) {
       console.error("Error fetching companies:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+    const loadCategories = async () => {
+    try {
+      const response = await fetchCategories();
+      const filtered = response.data.filter((cat: Category) => cat.id !== Number(category.id));
+      setCategories(filtered);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
     }
   };
 
@@ -52,6 +64,13 @@ const CategoryPage: React.FC = () => {
     setFilteredCompanies(filtered);
   };
 
+    const handleCategoryClick = (selectedCategory: Category) => {
+    navigate(`/category/${selectedCategory.name}`, { 
+      state: { category: selectedCategory } 
+    });
+  };
+
+
   return (
     <Layout>
       <Helmet>
@@ -64,7 +83,7 @@ const CategoryPage: React.FC = () => {
       <section className="relative min-h-[300px] overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src={`http://localhost:5000${category.image}`}
+            src={`https://api.cpromart.site${category.image}`}
             alt={category.name}
             className="h-full w-full object-cover"
           />
@@ -80,6 +99,35 @@ const CategoryPage: React.FC = () => {
           </div>
         </div>
       </section>
+
+{/* Other categories section */}
+{categories.length > 0 && (
+  <section className="bg-white py-6">
+    <div className="container mx-auto px-4">
+      <h2 className="mb-5 text-lg font-medium text-gray-600">More Categories</h2>
+      <div className="flex flex-wrap gap-2">
+        {categories.map((cat) => (
+          <button
+            key={cat.id}
+            onClick={() => handleCategoryClick(cat)}
+            className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-xs transition-all hover:border-primary-300 hover:bg-primary-50 hover:text-primary-600 hover:shadow-md hover:-translate-y-0.5 duration-200"
+          >
+            {cat.image && (
+              <div className="h-6 w-6 overflow-hidden rounded-full">
+                <img
+                  src={`https://api.cpromart.site${cat.image}`}
+                  alt={cat.name}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            )}
+            <span>{cat.name}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
 
       {/* Search and filter section */}
       <section className="bg-white py-8 shadow-md">
