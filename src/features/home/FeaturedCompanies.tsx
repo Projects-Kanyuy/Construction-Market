@@ -4,8 +4,11 @@ import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { fetchCompanies } from '../../api/api';
 import { CompanyData } from '../../types';
+import { useTranslation } from "react-i18next";
+import { getLocation } from '../../utils/location';
 
 const FeaturedCompanies: React.FC = () => {
+  const { t } = useTranslation();
   const [companies, setCompanies] = useState<CompanyData[]>([]);
   
   useEffect(() => {
@@ -14,8 +17,9 @@ const FeaturedCompanies: React.FC = () => {
 
   const loadCompanies = async () => {
     try {
-      const response = await fetchCompanies();
-      setCompanies(response.data.slice(0, 10));
+      const location = await getLocation();
+      const response = await fetchCompanies(location.lat, location.lon);
+      setCompanies(response.data.slice(0, 9));
     } catch (error) {
       console.error('Error fetching companies:', error);
     }
@@ -27,10 +31,10 @@ const FeaturedCompanies: React.FC = () => {
         <div className="mb-4 flex items-end justify-between">
           <div>
             <h2 className="mb-3 text-3xl font-bold text-gray-900 md:text-4xl">
-              Featured Companies
+              {t('featured_companies')}
             </h2>
             <p className="max-w-2xl text-lg text-gray-600">
-              Discover top-rated construction companies across various specialties.
+              {t('dicover_top_rated')}
             </p>
           </div>
           
@@ -38,7 +42,7 @@ const FeaturedCompanies: React.FC = () => {
             to="/categories" 
             className="hidden items-center text-[#3B546A] transition-colors hover:text-[#2A3E50] md:flex"
           >
-            View All 
+            {t('view_all')}
             <ArrowRight className="ml-2 h-5 w-5" />
           </Link>
         </div>
@@ -54,7 +58,7 @@ const FeaturedCompanies: React.FC = () => {
             to="/categories" 
             className="inline-flex items-center font-medium text-[#3B546A] transition-colors hover:text-[#2A3E50]"
           >
-            View All Companies 
+            {t('view_all_companies')}
             <ArrowRight className="ml-2 h-5 w-5" />
           </Link>
         </div>

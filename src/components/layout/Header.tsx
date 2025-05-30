@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation} from 'react-router-dom';
 import { Menu, X, Building2, Search } from 'lucide-react';
+import { useTranslation } from "react-i18next";
 
 const Header: React.FC = () => {
+  const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
@@ -47,7 +49,7 @@ const Header: React.FC = () => {
                 to="/"
                 className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`}
               >
-                Home
+                {t('home')}
               </Link>
             </li>
             <li>
@@ -55,7 +57,7 @@ const Header: React.FC = () => {
                 to="/categories"
                 className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`}
               >
-                Categories
+                {t('cateories')}
               </Link>
             </li>
             <li>
@@ -63,7 +65,7 @@ const Header: React.FC = () => {
                 to="/about"
                 className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`}
               >
-                About
+                {t('about')}
               </Link>
             </li>
             <li>
@@ -71,7 +73,7 @@ const Header: React.FC = () => {
                 to="/contact"
                 className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`}
               >
-                Contact
+                {t('contact')}
               </Link>
             </li>
             {/* <li>
@@ -122,7 +124,7 @@ const Header: React.FC = () => {
                   className="block text-lg font-medium text-gray-900"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Home
+                  {t('home')}
                 </Link>
               </li>
               <li>
@@ -131,7 +133,7 @@ const Header: React.FC = () => {
                   className="block text-lg font-medium text-gray-900"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Categories
+                  {t('cateories')}
                 </Link>
               </li>
               <li>
@@ -140,7 +142,7 @@ const Header: React.FC = () => {
                   className="block text-lg font-medium text-gray-900"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  About
+                  {t('about')}
                 </Link>
               </li>
               <li>
@@ -149,7 +151,7 @@ const Header: React.FC = () => {
                   className="block text-lg font-medium text-gray-900"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Contact
+                  {t('contact')}
                 </Link>
               </li>
               {/* <li>
@@ -184,7 +186,7 @@ const Header: React.FC = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 <Search className="mr-2 h-5 w-5" />
-                <span>Search for companies...</span>
+                <span>{t('search_for_companies')}</span>
               </Link>
             </div>
           </nav>

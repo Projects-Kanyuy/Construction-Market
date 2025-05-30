@@ -4,8 +4,12 @@ import { fetchCategories } from '../../api/api';
 import { Category } from '../../types';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { useTranslation } from "react-i18next";
 
 const CategorySection: React.FC = () => {
+    const { t } = useTranslation();
+
+
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
@@ -15,7 +19,7 @@ const CategorySection: React.FC = () => {
   const fetchCategoriesData = async () => {
     try {
       const response = await fetchCategories();
-      setCategories(response.data.slice(0, 10)); 
+      setCategories(response.data.slice(0, 6)); 
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
@@ -26,10 +30,10 @@ return (
       <div className="container mx-auto px-4">
         <div className="mb-12 text-center">
           <h2 className="mb-3 text-3xl font-bold text-gray-900 md:text-4xl">
-            Find Construction Experts by Category
+            {t('find_construction_by_categories')}
           </h2>
           <p className="mx-auto max-w-2xl text-lg text-gray-600">
-            Browse through our specialized categories to find the perfect construction company for your project needs.
+            {t('browse')}
           </p>
         </div>
 
@@ -44,7 +48,7 @@ return (
             to="/categories" 
             className="inline-flex items-center font-medium text-[#3B546A] transition-colors hover:text-[#2A3E50]"
           >
-            View All Categories 
+            {t('view_all_categories')} 
             <ArrowRight className="ml-2 h-5 w-5" />
           </Link>
         </div>

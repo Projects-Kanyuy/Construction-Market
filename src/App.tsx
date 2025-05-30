@@ -19,8 +19,18 @@ import CompanyProfile from "./features/company/dashboard/CompanyProfile";
 import CompanyProjects from "./features/company/dashboard/CompanyProjects";
 import ProtectedRoute from "./context/AdminProtectedRoute";
 import CompanyProtectedRoute from "./context/CompanyProtectedRoute";
+import { useEffect } from "react";
+
+import { getLocation } from "./utils/location"
+import toast from "react-hot-toast";
 
 function App() {
+    useEffect(() => {
+    getLocation().catch((err) => {
+      console.warn('Location access denied or failed:', err.message);
+      toast.error('You will not be able to access location-based features.');
+    });
+  }, []);
   return (
     <>
       <Toaster position="top-right" />

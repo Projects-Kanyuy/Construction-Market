@@ -3,8 +3,10 @@ import Layout from '../../components/layout/Layout';
 import { Category } from '../../types';
 import CategoryCard from '../../components/common/CategoryCard';
 import { fetchCategories } from '../../api/api';
+import { useTranslation } from 'react-i18next';
 
 const CategoriesPage: React.FC = () => {
+  const { t } = useTranslation();
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
@@ -25,10 +27,10 @@ const loadCategories = async () => {
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
             <h1 className="mb-3 text-4xl font-bold text-gray-900">
-              Construction Categories
+              {t('construction_categories')}
             </h1>
             <p className="mx-auto max-w-2xl text-lg text-gray-600">
-              Browse through our specialized categories to find the perfect construction company for your project needs.
+              {t('browse_through_categories')}
             </p>
           </div>
           

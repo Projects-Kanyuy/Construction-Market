@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import { Building2, Facebook, Twitter, Instagram, Linkedin, Mail, Phone } from 'lucide-react';
 import { Category } from '../../types';
 import { fetchCategories } from '../../api/api';
+import { useTranslation } from "react-i18next";
 
 const Footer: React.FC = () => {
+  const { t } = useTranslation();
   const [categories, setCategories] = useState<Category[]>([])
   const currentYear = new Date().getFullYear();
   
@@ -15,7 +17,7 @@ const Footer: React.FC = () => {
   const loadCategories = async () => {
     try {
       const response = await fetchCategories();
-      setCategories(response.data);
+      setCategories(response.data.slice(0, 4));
     } catch (error) {
       console.log('Error fetching categories:', error);
     }
@@ -31,7 +33,7 @@ const Footer: React.FC = () => {
               <span className="text-xl font-bold">CProMart</span>
             </Link>
             <p className="mb-4 text-gray-300">
-              Connecting you with top construction companies across various specialties in Cameroon.
+              {t('connecting_with_top')}
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-300 transition-colors hover:text-[#FF9D42]">
@@ -51,23 +53,26 @@ const Footer: React.FC = () => {
           
           {/* Categories */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold">Categories</h3>
+            <h3 className="mb-4 text-lg font-semibold">{t('cateories')}</h3>
             <ul className="space-y-2">
               {categories.map((category) => (
                 <li key={category.id}>
-                  <Link to={`/category/${category.id}`} className="text-gray-300 transition-colors hover:text-[#FF9D42]">{category.name}</Link>
+                  <Link to={`/category/${category.name}`} className="text-gray-300 transition-colors hover:text-[#FF9D42]" state={{ category }}>{category.name}</Link>
                 </li>
               ))}
+              <li>
+                  <Link to={'/categories'} className="text-gray-300 transition-colors hover:text-[#FF9D42]">See more Categories</Link>
+              </li>
             </ul>
           </div>
           
           {/* Quick Links */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold">Quick Links</h3>
+            <h3 className="mb-4 text-lg font-semibold">{t('quick_links')}</h3>
             <ul className="space-y-2">
-              <li><Link to="/" className="text-gray-300 transition-colors hover:text-[#FF9D42]">Home</Link></li>
-              <li><Link to="/about" className="text-gray-300 transition-colors hover:text-[#FF9D42]">About Us</Link></li>
-              <li><Link to="/contact" className="text-gray-300 transition-colors hover:text-[#FF9D42]">Contact</Link></li>
+              <li><Link to="/" className="text-gray-300 transition-colors hover:text-[#FF9D42]">{t('home')}</Link></li>
+              <li><Link to="/about" className="text-gray-300 transition-colors hover:text-[#FF9D42]">{t('about_us')}</Link></li>
+              <li><Link to="/contact" className="text-gray-300 transition-colors hover:text-[#FF9D42]">{t('contact')}</Link></li>
               {/* <li><Link to="/privacy" className="text-gray-300 transition-colors hover:text-[#FF9D42]">Privacy Policy</Link></li> */}
               {/* <li><Link to="/terms" className="text-gray-300 transition-colors hover:text-[#FF9D42]">Terms of Service</Link></li> */}
             </ul>
@@ -75,7 +80,7 @@ const Footer: React.FC = () => {
           
           {/* Contact */}
           <div id="contact">
-            <h3 className="mb-4 text-lg font-semibold">Contact Us</h3>
+            <h3 className="mb-4 text-lg font-semibold">{t('contact_us')}</h3>
             <ul className="space-y-3">
               <li className="flex items-center">
                 <Mail className="mr-2 h-5 w-5 text-[#FF9D42]" />

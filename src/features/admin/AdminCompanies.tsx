@@ -63,7 +63,7 @@ const AdminCompanies = () => {
   const loadCompanies = async () => {
     setLoading(true);
     try {
-      const response = await fetchCompanies();
+      const response = await fetchCompanies(4.9559, 9.8598);
       setCompanies(response.data);
     } catch (error) {
       console.error("Error loading companies:", error);
