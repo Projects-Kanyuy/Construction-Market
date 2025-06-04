@@ -7,7 +7,6 @@ import { Category, CompanyData } from "../../types";
 import { fetchCategories, getCompaniesByCategory } from "../../api/api";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { getLocation } from "../../utils/location";
 
 const CategoryPage: React.FC = () => {
   const { t } = useTranslation();
@@ -28,8 +27,9 @@ const CategoryPage: React.FC = () => {
   const loadCompanies = async () => {
     setLoading(true);
     try {
-      const location = await getLocation();
-      const response = await getCompaniesByCategory(category.id!, location.lat, location.lon);
+      // const location = await getLocation();
+      const response = await getCompaniesByCategory(category.id!);
+      console.log("Companies fetched:", response.data);
       setCompanies(response.data);
       setFilteredCompanies(response.data);
     } catch (error) {

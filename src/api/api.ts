@@ -10,12 +10,12 @@ export const updateUser = (id: string | number, formData: Record<string, any>) =
 
 export const deleteUser = (id: string | number) => instance.delete(`/users/${id}`);
 
-// export const fetchCompanies = () => instance.get('/companies');
-export const fetchCompanies = (lat: number, lon: number) => instance.get('/companies/by_location', { params: { lat, lon } });
+export const fetchCompanies = () => instance.get('/companies');
+// export const fetchCompanies = (lat: number, lon: number) => instance.get('/companies/by_location', { params: { lat, lon } });
 
 export const getCompanyByUsername = (username: string) => instance.get(`/companies/${username}`);
 
-export const getCompaniesByCategory = (categoryId: string | number, lat: number, lon: number) => instance.get(`/companies/category/${categoryId}`, { params: { lat, lon } });
+export const getCompaniesByCategory = (categoryId: string | number) => instance.get(`/companies/category/${categoryId}`);
 export const getProjectsByCompany = (companyUsername: string) => instance.get(`/companies/${companyUsername}/projects`);
 
 export const getFeaturedCompanies = () => instance.get('/companies/view-count/featured');

@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { fetchCompanies } from '../../api/api';
 import { CompanyData } from '../../types';
 import { useTranslation } from "react-i18next";
-import { getLocation } from '../../utils/location';
 
 const FeaturedCompanies: React.FC = () => {
   const { t } = useTranslation();
@@ -17,8 +16,9 @@ const FeaturedCompanies: React.FC = () => {
 
   const loadCompanies = async () => {
     try {
-      const location = await getLocation();
-      const response = await fetchCompanies(location.lat, location.lon);
+      // const location = await getLocation();
+      const response = await fetchCompanies();
+      console.log('Companies fetched:', response.data);
       setCompanies(response.data.slice(0, 9));
     } catch (error) {
       console.error('Error fetching companies:', error);
