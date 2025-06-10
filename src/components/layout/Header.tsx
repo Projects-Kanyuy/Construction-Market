@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation} from 'react-router-dom';
-import { Menu, X, Building2, Search } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, Building2, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const Header: React.FC = () => {
@@ -8,11 +8,11 @@ const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
-  
+
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
-  
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 10) {
@@ -21,19 +21,18 @@ const Header: React.FC = () => {
         setIsScrolled(false);
       }
     };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  
+
   const headerClasses = `fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-    isScrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'
+    isScrolled ? "bg-white shadow-md py-2" : "bg-transparent py-4"
   }`;
-  
-  const textColor = isScrolled || location.pathname !== '/' 
-    ? 'text-[#1A2531]' 
-    : 'text-white';
-  
+
+  const textColor =
+    isScrolled || location.pathname !== "/" ? "text-[#1A2531]" : "text-white";
+
   return (
     <header className={headerClasses}>
       <div className="container mx-auto flex items-center justify-between px-4">
@@ -41,39 +40,39 @@ const Header: React.FC = () => {
           <Building2 className={`mr-2 h-7 w-7 text-[#FF9D42]`} />
           <span className={`text-xl font-bold ${textColor}`}>CProMart</span>
         </Link>
-        
+
         <nav className="hidden md:block">
           <ul className="flex space-x-8">
             <li>
-              <Link 
+              <Link
                 to="/"
                 className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`}
               >
-                {t('home')}
+                {t("home")}
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link 
                 to="/categories"
                 className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`}
               >
                 {t('cateories')}
               </Link>
-            </li>
+            </li> */}
             <li>
-              <Link 
+              <Link
                 to="/about"
                 className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`}
               >
-                {t('about')}
+                {t("about")}
               </Link>
             </li>
             <li>
-              <Link 
+              <Link
                 to="/contact"
                 className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`}
               >
-                {t('contact')}
+                {t("contact")}
               </Link>
             </li>
             {/* <li>
@@ -100,11 +99,11 @@ const Header: React.FC = () => {
             </li> */}
           </ul>
         </nav>
-        
-        <button 
+
+        <button
           className="md:hidden"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
         >
           {isMenuOpen ? (
             <X className={`h-6 w-6 ${textColor}`} />
@@ -113,45 +112,45 @@ const Header: React.FC = () => {
           )}
         </button>
       </div>
-      
+
       {isMenuOpen && (
         <div className="fixed inset-0 top-[57px] z-40 bg-white md:hidden">
           <nav className="container mx-auto px-4 py-6">
             <ul className="space-y-4">
               <li>
-                <Link 
+                <Link
                   to="/"
                   className="block text-lg font-medium text-gray-900"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {t('home')}
+                  {t("home")}
                 </Link>
               </li>
               <li>
-                <Link 
+                <Link
                   to="/categories"
                   className="block text-lg font-medium text-gray-900"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {t('cateories')}
+                  {t("cateories")}
                 </Link>
               </li>
               <li>
-                <Link 
+                <Link
                   to="/about"
                   className="block text-lg font-medium text-gray-900"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {t('about')}
+                  {t("about")}
                 </Link>
               </li>
               <li>
-                <Link 
+                <Link
                   to="/contact"
                   className="block text-lg font-medium text-gray-900"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {t('contact')}
+                  {t("contact")}
                 </Link>
               </li>
               {/* <li>
@@ -178,15 +177,15 @@ const Header: React.FC = () => {
                 )}
               </li> */}
             </ul>
-            
+
             <div className="mt-6">
-              <Link 
-                to="/search" 
+              <Link
+                to="/search"
                 className="flex items-center rounded-lg bg-gray-100 px-4 py-3 text-gray-700"
                 onClick={() => setIsMenuOpen(false)}
               >
                 <Search className="mr-2 h-5 w-5" />
-                <span>{t('search_for_companies')}</span>
+                <span>{t("search_for_companies")}</span>
               </Link>
             </div>
           </nav>
@@ -196,4 +195,4 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header
+export default Header;
