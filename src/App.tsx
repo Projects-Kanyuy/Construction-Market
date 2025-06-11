@@ -26,6 +26,10 @@ import ProtectedRoute from "./context/AdminProtectedRoute";
 import CompanyProtectedRoute from "./context/CompanyProtectedRoute";
 import { useEffect } from "react";
 
+// sign in and register
+import SignInPage from "./features/auth/SignInPage";
+import RegisterPage from "./features/auth/RegisterPage";
+
 import { getLocation } from "./utils/location";
 import toast from "react-hot-toast";
 
@@ -80,6 +84,10 @@ function App() {
 
           {/* Redirect all other routes to home */}
           <Route path="*" element={<Navigate to="/" replace />} />
+
+          {/* login and Register page routes */}
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/register" element={<RegisterPage />} />
         </Routes>
       </Router>
     </>

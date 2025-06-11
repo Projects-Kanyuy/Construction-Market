@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Building2, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
+
+import { AuthContext } from "../../context/AuthContext";
 
 const Header: React.FC = () => {
   const { t } = useTranslation();
@@ -31,7 +33,13 @@ const Header: React.FC = () => {
   }`;
 
   const textColor =
-    isScrolled || location.pathname !== "/" ? "text-[#1A2531]" : "text-white";
+    // isScrolled || location.pathname !== "/" ? "text-[#1A2531]" : "text-white";
+    isScrolled || location.pathname !== "/"
+      ? "text-[#1A2531]"
+      : "text-[#1A2531]";
+
+  //
+  const { user, isAuthenticated, logout } = useContext(AuthContext);
 
   return (
     <header className={headerClasses}>
@@ -42,7 +50,7 @@ const Header: React.FC = () => {
         </Link>
 
         <nav className="hidden md:block">
-          <ul className="flex space-x-8">
+          <ul className="flex items-center  space-x-8 ">
             <li>
               <Link
                 to="/"
@@ -51,14 +59,7 @@ const Header: React.FC = () => {
                 {t("home")}
               </Link>
             </li>
-            {/* <li>
-              <Link 
-                to="/categories"
-                className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`}
-              >
-                {t('cateories')}
-              </Link>
-            </li> */}
+
             <li>
               <Link
                 to="/about"
@@ -75,28 +76,35 @@ const Header: React.FC = () => {
                 {t("contact")}
               </Link>
             </li>
-            {/* <li>
+            <li>
               {isAuthenticated ? (
                 <div>
-                  {user.role == "USER" ? (<button className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`} onClick={logout}>Logout</button>) :
-                  (<Link 
-                      to= {user.role == "ADMIN" ? "/admin" : "/dashboard"}
+                  {user.role == "USER" ? (
+                    <button
+                      className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`}
+                      onClick={logout}
+                    >
+                      Logout
+                    </button>
+                  ) : (
+                    <Link
+                      to={user.role == "ADMIN" ? "/admin" : "/dashboard"}
                       className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`}
                       onClick={() => setIsMenuOpen(false)}
-                      >
-                        Dashboard
+                    >
+                      Dashboard
                     </Link>
                   )}
                 </div>
-               ) : (
-              <Link 
-                to="/signin"
-                className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`}
-              >
-                Sign In
-              </Link>
+              ) : (
+                <Link
+                  to="/signin"
+                  className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`}
+                >
+                  Sign In
+                </Link>
               )}
-            </li> */}
+            </li>
           </ul>
         </nav>
 
@@ -153,29 +161,40 @@ const Header: React.FC = () => {
                   {t("contact")}
                 </Link>
               </li>
-              {/* <li>
+
+              <li>
                 {isAuthenticated ? (
                   <div>
-                    {user.role == "USER" ? (<button className="block text-lg font-medium text-gray-900" onClick={() => { setIsMenuOpen(false); logout();}}>Logout</button>) : (
-                      <Link 
-                        to= {user.role == "ADMIN" ? "/admin" : "/dashboard"}
+                    {user.role == "USER" ? (
+                      <button
+                        className="block text-lg font-medium text-gray-900"
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          logout();
+                        }}
+                      >
+                        Logout
+                      </button>
+                    ) : (
+                      <Link
+                        to={user.role == "ADMIN" ? "/admin" : "/dashboard"}
                         className="block text-lg font-medium text-gray-900"
                         onClick={() => setIsMenuOpen(false)}
-                        >
-                          Dashboard
+                      >
+                        Dashboard
                       </Link>
                     )}
                   </div>
                 ) : (
-                <Link 
-                  to="/signin"
-                  className="block text-lg font-medium text-gray-900"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign In
-                </Link>
+                  <Link
+                    to="/signin"
+                    className="block text-lg font-medium text-gray-900"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Sign In
+                  </Link>
                 )}
-              </li> */}
+              </li>
             </ul>
 
             <div className="mt-6">

@@ -30,11 +30,11 @@ const CompanyDetailPage: React.FC = () => {
       <Layout>
         <div className="container mx-auto px-4 py-20">
           <h1 className="mb-8 text-3xl font-bold text-center">
-            {t('company_not_found')}
+            {t("company_not_found")}
           </h1>
           <div className="flex justify-center">
             <Link to="/">
-              <Button variant="primary">{t('return_to_home')}</Button>
+              <Button variant="primary">{t("return_to_home")}</Button>
             </Link>
           </div>
         </div>
@@ -47,10 +47,10 @@ const CompanyDetailPage: React.FC = () => {
   return (
     <Layout>
       <Helmet>
-        <title>{t('company_title', {company_name: company.name})}</title>
+        <title>{t("company_title", { company_name: company.name })}</title>
         <meta
           name="description"
-          content={t('company_description', {company_name: company.name})}
+          content={t("company_description", { company_name: company.name })}
         />
       </Helmet>
       {/* Company Header */}
@@ -76,7 +76,8 @@ const CompanyDetailPage: React.FC = () => {
                   <span className="text-gray-700">{company.location}</span>
                 </div>
 
-                <div className="flex flex-wrap gap-2">
+                {/* categories page deleted so i commented this out */}
+                {/* <div className="flex flex-wrap gap-2">
                   {company.categories?.map((category) => (
                     <Link
                       key={category.id}
@@ -87,7 +88,7 @@ const CompanyDetailPage: React.FC = () => {
                       {category.name}
                     </Link>
                   ))}
-                </div>
+                </div> */}
               </div>
             </div>
 
@@ -102,7 +103,7 @@ const CompanyDetailPage: React.FC = () => {
                   size="large"
                   icon={<Phone size={18} />}
                 >
-                  {t('contact_via_whatsapp')}
+                  {t("contact_via_whatsapp")}
                 </Button>
               </a>
             </div>
@@ -118,14 +119,16 @@ const CompanyDetailPage: React.FC = () => {
             <div className="order-2 lg:order-1 lg:col-span-2">
               {/* About */}
               <div className="mb-12 rounded-xl bg-white p-6 shadow-sm md:p-8">
-                <h2 className="mb-4 text-2xl font-bold text-gray-900">{t('about')}</h2>
+                <h2 className="mb-4 text-2xl font-bold text-gray-900">
+                  {t("about")}
+                </h2>
                 <p className="text-gray-700">{company.description}</p>
               </div>
 
               {/* Past Projects */}
               <div className="mb-12 rounded-xl bg-white p-6 shadow-sm md:p-8">
                 <h2 className="mb-6 text-2xl font-bold text-gray-900">
-                  {t('projects')}
+                  {t("projects")}
                 </h2>
 
                 {company.projects && company.projects.length > 0 ? (
@@ -160,7 +163,7 @@ const CompanyDetailPage: React.FC = () => {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-600">{t('no_projects')}</p>
+                  <p className="text-gray-600">{t("no_projects")}</p>
                 )}
               </div>
             </div>
@@ -169,14 +172,16 @@ const CompanyDetailPage: React.FC = () => {
             <div className="order-1 lg:order-2">
               <div className="sticky top-24 rounded-xl bg-white p-6 shadow-sm md:p-8">
                 <h2 className="mb-6 text-xl font-bold text-gray-900">
-                  {t('contact_information')}
+                  {t("contact_information")}
                 </h2>
 
                 <div className="space-y-5">
                   <div className="flex items-start">
                     <Phone className="mr-3 h-5 w-5 text-[#3B546A]" />
                     <div>
-                      <p className="text-sm font-medium text-gray-500">{t('phone')}</p>
+                      <p className="text-sm font-medium text-gray-500">
+                        {t("phone")}
+                      </p>
                       <a
                         href={`tel:${company.phone}`}
                         className="text-gray-900 transition-colors hover:text-[#3B546A]"
@@ -189,7 +194,9 @@ const CompanyDetailPage: React.FC = () => {
                   <div className="flex items-start">
                     <Mail className="mr-3 h-5 w-5 text-[#3B546A]" />
                     <div>
-                      <p className="text-sm font-medium text-gray-500">{t('email')}</p>
+                      <p className="text-sm font-medium text-gray-500">
+                        {t("email")}
+                      </p>
                       <a
                         href={`mailto:${company.email}`}
                         className="text-gray-900 transition-colors hover:text-[#3B546A]"
@@ -203,7 +210,7 @@ const CompanyDetailPage: React.FC = () => {
                     <MapPin className="mr-3 h-5 w-5 text-[#3B546A]" />
                     <div>
                       <p className="text-sm font-medium text-gray-500">
-                        {t('location')}
+                        {t("location")}
                       </p>
                       <p className="text-gray-900">{company.location}</p>
                     </div>
@@ -217,7 +224,7 @@ const CompanyDetailPage: React.FC = () => {
                   company.linkedin) && (
                   <div className="mt-8">
                     <h3 className="mb-4 text-lg font-medium text-gray-900">
-                      {t('social_media')}
+                      {t("social_media")}
                     </h3>
                     <div className="flex space-x-4">
                       {company.facebook && (
@@ -276,7 +283,7 @@ const CompanyDetailPage: React.FC = () => {
                     className="flex w-full items-center justify-center rounded-lg bg-[#FF9D42] py-3 font-medium text-white transition-all duration-200 hover:bg-[#F08A2C] active:bg-[#D6791F]"
                   >
                     <Phone className="mr-2 h-5 w-5" />
-                    {t('contact_via_whatsapp')}
+                    {t("contact_via_whatsapp")}
                   </a>
                 </div>
               </div>
