@@ -37,7 +37,7 @@ export const askForLocation = () =>
       (error) => {
         reject(error);
       },
-      { enableHighAccuracy: true, timeout: 10000 }
+      { enableHighAccuracy: true, timeout: 20000 }
     );
   });
 

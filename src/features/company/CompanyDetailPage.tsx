@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { CompanyData } from "../../types";
 import Layout from "../../components/layout/Layout";
 import Button from "../../components/common/Button";
 import {
+  Globe,
   Phone,
   Mail,
   MapPin,
@@ -15,15 +16,47 @@ import {
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
+import { fetchCompanyById } from "../../api/api";
+import Spinner from "../../components/common/Spinner";
 
 const CompanyDetailPage: React.FC = () => {
   const { t } = useTranslation();
+  const { slug } = useParams();
   const location = useLocation();
-  const company: CompanyData = location.state?.company;
+  const [company, setCompany] = React.useState<CompanyData | null>(location.state?.company || null);
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [company]);
+
+    if (!company && slug) {
+      const encodedId = slug.split("--").pop();
+      if (encodedId) {
+        try {
+          const id = parseInt(atob(encodedId), 10);
+          setLoading(true); // set loading before fetching
+          fetchCompanyById(id)
+            .then((response) => {
+              setCompany(response.data);
+            })
+            .catch((error) => {
+              console.error("Error fetching company:", error);
+            })
+            .finally(() => {
+              setLoading(false); // done loading
+            });
+        } catch (error) {
+          console.error("Invalid company ID in URL");
+        }
+      }
+    }
+  }, [company, slug]);
+
+  if (loading) {
+    return (
+      <Spinner />
+    );
+  }
 
   if (!company) {
     return (
@@ -218,61 +251,72 @@ const CompanyDetailPage: React.FC = () => {
                 </div>
 
                 {/* Social Media */}
-                {(company.facebook ||
+                {(company.website ||
+                  company.facebook ||
                   company.twitter ||
                   company.instagram ||
                   company.linkedin) && (
-                  <div className="mt-8">
-                    <h3 className="mb-4 text-lg font-medium text-gray-900">
-                      {t("social_media")}
-                    </h3>
-                    <div className="flex space-x-4">
-                      {company.facebook && (
-                        <a
-                          href={company.facebook}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
-                        >
-                          <Facebook size={18} />
-                        </a>
-                      )}
+                    <div className="mt-8">
+                      <h3 className="mb-4 text-lg font-medium text-gray-900">
+                        {t("social_media")}
+                      </h3>
+                      <div className="flex space-x-4">
+                        {company.website && (
+                          <a
+                            href={company.website}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
+                          >
+                            <Globe size={18} />
+                          </a>
+                        )}
+                        {company.facebook && (
+                          <a
+                            href={company.facebook}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
+                          >
+                            <Facebook size={18} />
+                          </a>
+                        )}
 
-                      {company.twitter && (
-                        <a
-                          href={company.twitter}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
-                        >
-                          <Twitter size={18} />
-                        </a>
-                      )}
+                        {company.twitter && (
+                          <a
+                            href={company.twitter}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
+                          >
+                            <Twitter size={18} />
+                          </a>
+                        )}
 
-                      {company.instagram && (
-                        <a
-                          href={company.instagram}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
-                        >
-                          <Instagram size={18} />
-                        </a>
-                      )}
+                        {company.instagram && (
+                          <a
+                            href={company.instagram}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
+                          >
+                            <Instagram size={18} />
+                          </a>
+                        )}
 
-                      {company.linkedin && (
-                        <a
-                          href={company.linkedin}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
-                        >
-                          <Linkedin size={18} />
-                        </a>
-                      )}
+                        {company.linkedin && (
+                          <a
+                            href={company.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
+                          >
+                            <Linkedin size={18} />
+                          </a>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {/* CTA Button */}
                 <div className="mt-8">

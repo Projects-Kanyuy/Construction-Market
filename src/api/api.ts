@@ -11,6 +11,7 @@ export const updateUser = (id: string | number, formData: Record<string, any>) =
 export const deleteUser = (id: string | number) => instance.delete(`/users/${id}`);
 
 export const fetchCompanies = () => instance.get('/companies');
+export const fetchCompanyById = (id: string | number) => instance.get(`/companies/by_id/${id}`);
 // export const fetchCompanies = (lat: number, lon: number) => instance.get('/companies/by_location', { params: { lat, lon } });
 
 export const getCompanyByUsername = (username: string) => instance.get(`/companies/${username}`);
@@ -65,3 +66,9 @@ export const updateProject = (id: string | number, projectId: string | number, f
     headers: { 'Content-Type': 'multipart/form-data' },
 });
 export const deleteProject = (id: string | number, projectId: string | number) => instance.delete(`/companies/${id}/projects/${projectId}`);
+
+export const incrementContactClicks = (id: string | number) =>
+  instance.post(`/companies/${id}/contact-click`);
+
+export const logActivity = (formData: Record<string, any>) =>
+  instance.post('/activity_logs', formData);

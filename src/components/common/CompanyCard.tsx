@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { CompanyData } from '../../types';
 import Button from './Button';
 import { Phone } from 'lucide-react';
-import { incrementCompanyViewCount } from '../../api/api';
+import { incrementCompanyViewCount, incrementContactClicks } from '../../api/api';
 
 interface CompanyCardProps {
   company: CompanyData;
@@ -18,7 +18,21 @@ const incrementViewCount = async (companyId: number) => {
   }
 }
 
+const slugify = (str: string) =>
+  str.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+const incrementClicks = async (companyId: number) => {
+  try {
+    await incrementContactClicks(companyId);
+    console.log('clicks updated successfully!');
+  } catch (error) {
+    console.log('Error incrementing contact clicks:', error);
+  }
+}
+
 const CompanyCard: React.FC<CompanyCardProps> = ({ company }) => {
+  const encodedId = btoa(String(company.id));
+  const slug = `${slugify(company.name)}--${encodedId}`;
   const whatsappLink = `https://wa.me/${company.phone?.replace(/\D/g, '')}`;
   return (
     <div className="group flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-md transition-all duration-300 hover:shadow-lg">
@@ -39,7 +53,7 @@ const CompanyCard: React.FC<CompanyCardProps> = ({ company }) => {
         
         <div className="mt-auto flex items-center justify-between">
           <Link 
-            to={`/company/${company.name}`}
+            to={`company/${slug}`}
             state={{ company }}
             className="text-sm font-medium text-[#3B546A] transition-colors hover:text-[#2A3E50]"
             onClick={() => incrementViewCount(company.id)}
@@ -48,6 +62,7 @@ const CompanyCard: React.FC<CompanyCardProps> = ({ company }) => {
           </Link>
             <a href={company.phone ? whatsappLink : '#'} target="_blank" rel="noopener noreferrer">
             <Button 
+            onClick={() => incrementClicks(company.id)}
               variant="secondary" 
               size="small"
               icon={<Phone size={16} />}
