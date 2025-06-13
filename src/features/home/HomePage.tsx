@@ -1,6 +1,6 @@
 import React from "react";
 import HeroSection from "./HeroSection";
-import CategorySection from "./CategorySection";
+// import CategorySection from "./CategorySection";
 import FeaturedCompanies from "./FeaturedCompanies";
 import Layout from "../../components/layout/Layout";
 import { Helmet } from "react-helmet-async";
@@ -21,7 +21,7 @@ const HomePage: React.FC = () => {
         <HeroSection />
       </div>
       <div id="categories">
-        <CategorySection />
+        {/* <CategorySection /> */}
       </div>
       <FeaturedCompanies />
     </Layout>

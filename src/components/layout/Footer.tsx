@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import {
   Building2,
@@ -9,27 +9,27 @@ import {
   Mail,
   Phone,
 } from "lucide-react";
-import { Category } from "../../types";
-import { fetchCategories } from "../../api/api";
+// import { Category } from "../../types";
+// import { fetchCategories } from "../../api/api";
 import { useTranslation } from "react-i18next";
 
 const Footer: React.FC = () => {
   const { t } = useTranslation();
-  const [categories, setCategories] = useState<Category[]>([]);
+  // const [categories, setCategories] = useState<Category[]>([]);
   const currentYear = new Date().getFullYear();
 
-  useEffect(() => {
-    loadCategories();
-  }, [categories]);
+  // useEffect(() => {
+  //   loadCategories();
+  // }, [categories]);
 
-  const loadCategories = async () => {
-    try {
-      const response = await fetchCategories();
-      setCategories(response.data.slice(0, 4));
-    } catch (error) {
-      console.log("Error fetching categories:", error);
-    }
-  };
+  // const loadCategories = async () => {
+  //   try {
+  //     const response = await fetchCategories();
+  //     setCategories(response.data.slice(0, 4));
+  //   } catch (error) {
+  //     console.log("Error fetching categories:", error);
+  //   }
+  // };
   return (
     <footer className="bg-[#1A2531] text-white">
       <div id="about" className="container mx-auto px-4 py-12">
