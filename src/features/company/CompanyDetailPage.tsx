@@ -22,7 +22,7 @@ import { trackCustomEvent } from "../../utils/facebookPixel";
 
 const CompanyDetailPage: React.FC = () => {
   const { t } = useTranslation();
-  const { slug } = useParams();
+  const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const [company, setCompany] = React.useState<CompanyData | null>(location.state?.company || null);
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -30,28 +30,21 @@ const CompanyDetailPage: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    if (!company && slug) {
-      const encodedId = slug.split("--").pop();
-      if (encodedId) {
-        try {
-          const id = parseInt(atob(encodedId), 10);
+    if (!company && id) {
+      try {
+        const companyId = parseInt(id, 10);
+        if (!isNaN(companyId)) {
           setLoading(true);
-          fetchCompanyById(id)
-            .then((response) => {
-              setCompany(response.data);
-            })
-            .catch((error) => {
-              console.error("Error fetching company:", error);
-            })
-            .finally(() => {
-              setLoading(false);
-            });
-        } catch (error) {
-          console.error("Invalid company ID in URL");
+          fetchCompanyById(companyId)
+            .then((res) => setCompany(res.data))
+            .catch((err) => console.error('Failed to fetch company:', err))
+            .finally(() => setLoading(false));
         }
+      } catch (error) {
+        console.error('Invalid ID:', error);
       }
     }
-  }, [company, slug]);
+  }, [company, id]);
 
   if (loading) {
     return (

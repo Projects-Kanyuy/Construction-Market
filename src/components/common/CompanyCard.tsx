@@ -19,9 +19,6 @@ const incrementViewCount = async (companyId: number) => {
   }
 }
 
-const slugify = (str: string) =>
-  str.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-
 const incrementClicks = async (companyId: number) => {
   try {
     await incrementContactClicks(companyId);
@@ -32,8 +29,6 @@ const incrementClicks = async (companyId: number) => {
 }
 
 const CompanyCard: React.FC<CompanyCardProps> = ({ company }) => {
-  const encodedId = btoa(String(company.id));
-  const slug = `${slugify(company.name)}--${encodedId}`;
   const whatsappLink = `https://wa.me/${company.phone?.replace(/\D/g, '')}`;
   return (
     <div className="group flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-md transition-all duration-300 hover:shadow-lg">
@@ -54,7 +49,7 @@ const CompanyCard: React.FC<CompanyCardProps> = ({ company }) => {
         
         <div className="mt-auto flex items-center justify-between">
           <Link 
-            to={`/company/${slug}`}
+            to={`/company/${company.name}/${company.id}`}
             state={{ company }}
             className="text-sm font-medium text-[#3B546A] transition-colors hover:text-[#2A3E50]"
             onClick={() => {
