@@ -4,6 +4,7 @@ import { CompanyData } from '../../types';
 import Button from './Button';
 import { Phone } from 'lucide-react';
 import { incrementCompanyViewCount, incrementContactClicks } from '../../api/api';
+import { trackCustomEvent } from '../../utils/facebookPixel';
 
 interface CompanyCardProps {
   company: CompanyData;
@@ -56,18 +57,24 @@ const CompanyCard: React.FC<CompanyCardProps> = ({ company }) => {
             to={`company/${slug}`}
             state={{ company }}
             className="text-sm font-medium text-[#3B546A] transition-colors hover:text-[#2A3E50]"
-            onClick={() => incrementViewCount(company.id)}
+            onClick={() => {
+              incrementViewCount(company.id);
+              trackCustomEvent('clickOnCompany', { company: company.name })
+            }}
           >
             View Details
           </Link>
             <a href={company.phone ? whatsappLink : '#'} target="_blank" rel="noopener noreferrer">
             <Button 
-            onClick={() => incrementClicks(company.id)}
+            onClick={() => {
+              incrementClicks(company.id);
+              trackCustomEvent('ContactViaWhatsApp', { company: company.name });
+            }}
               variant="secondary" 
               size="small"
               icon={<Phone size={16} />}
             >
-              Contact
+              Contact via WhatsApp
             </Button>
           </a>          
         </div>

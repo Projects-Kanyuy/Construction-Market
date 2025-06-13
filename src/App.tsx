@@ -12,6 +12,7 @@ import CompanyProtectedRoute from "./context/CompanyProtectedRoute";
 import { getLocation } from "./utils/location";
 import Spinner from "./components/common/Spinner";
 import { logVisitorActivity } from "./utils/logVisitorActivity";
+import { initFacebookPixel } from "./utils/facebookPixel";
 
 // Lazy loaded components
 const HomePage = lazy(() => import("./features/home/HomePage"));
@@ -44,6 +45,7 @@ function App() {
     });
 
     logVisitorActivity();
+    initFacebookPixel();
   }, []);
 
   return (

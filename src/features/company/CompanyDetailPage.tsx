@@ -18,6 +18,7 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { fetchCompanyById } from "../../api/api";
 import Spinner from "../../components/common/Spinner";
+import { trackCustomEvent } from "../../utils/facebookPixel";
 
 const CompanyDetailPage: React.FC = () => {
   const { t } = useTranslation();
@@ -34,7 +35,7 @@ const CompanyDetailPage: React.FC = () => {
       if (encodedId) {
         try {
           const id = parseInt(atob(encodedId), 10);
-          setLoading(true); // set loading before fetching
+          setLoading(true);
           fetchCompanyById(id)
             .then((response) => {
               setCompany(response.data);
@@ -43,7 +44,7 @@ const CompanyDetailPage: React.FC = () => {
               console.error("Error fetching company:", error);
             })
             .finally(() => {
-              setLoading(false); // done loading
+              setLoading(false);
             });
         } catch (error) {
           console.error("Invalid company ID in URL");
@@ -132,6 +133,7 @@ const CompanyDetailPage: React.FC = () => {
                 rel="noopener noreferrer"
               >
                 <Button
+                onClick={() => trackCustomEvent('ContactViaWhatsApp', { company: company.name })}
                   variant="secondary"
                   size="large"
                   icon={<Phone size={18} />}
