@@ -3,7 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
-import xss from "xss-clean";
+import xss from "xss";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -20,13 +20,22 @@ const __dirname = path.dirname(__filename);
 
 // Security
 app.use(helmet());
-app.use(xss());
+app.use((req, _res, next) => {
+  if (req.body) {
+    for (const key in req.body) {
+      if (typeof req.body[key] === "string") {
+        req.body[key] = xss(req.body[key]);
+      }
+    }
+  }
+  next();
+});
 
 // CORS
 app.use(
   cors({
     origin: process.env.CLIENT_ORIGIN?.split(",") || "*",
-    credentials: true,
+    credentials: false,
   })
 );
 
