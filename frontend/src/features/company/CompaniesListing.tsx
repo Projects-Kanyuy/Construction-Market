@@ -11,6 +11,14 @@ const CACHE_KEY = "all_companies";
 const CACHE_TIMESTAMP_KEY = "all_companies_timestamp";
 const CACHE_EXPIRY = 24 * 60 * 60 * 1000;
 
+// Helper to normalize backend response
+function normalizeCompanies(data: any): CompanyData[] {
+  if (!data) return [];
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data.items)) return data.items;
+  return [];
+}
+
 const CategoryPage: React.FC = () => {
   const { t } = useTranslation();
   const [companies, setCompanies] = useState<CompanyData[]>([]);
@@ -18,38 +26,43 @@ const CategoryPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // Load from cache first
+  // Load cached data first
   useEffect(() => {
     const cached = localStorage.getItem(CACHE_KEY);
     const timestamp = localStorage.getItem(CACHE_TIMESTAMP_KEY);
     if (cached && timestamp) {
       const age = Date.now() - parseInt(timestamp, 10);
       if (age < CACHE_EXPIRY) {
-        const data = JSON.parse(cached);
-        setCompanies(data);
-        setFilteredCompanies(data);
-        setLoading(false);
+        try {
+          const data = normalizeCompanies(JSON.parse(cached));
+          setCompanies(data);
+          setFilteredCompanies(data);
+          setLoading(false);
+        } catch {
+          setCompanies([]);
+          setFilteredCompanies([]);
+        }
       }
     }
   }, []);
 
-  // Always fetch in background to update UI
+  // Fetch from API
   const loadCompanies = useCallback(async () => {
     try {
       const response = await fetchCompanies();
-      const data = response.data;
+      const data = normalizeCompanies(response.data);
+
       setCompanies(data);
-      setFilteredCompanies(() => {
-        if (searchQuery.trim()) {
-          return filterCompanies(data, searchQuery);
-        }
-        return data;
-      });
+      setFilteredCompanies(
+        searchQuery.trim() ? filterCompanies(data, searchQuery) : data
+      );
 
       localStorage.setItem(CACHE_KEY, JSON.stringify(data));
       localStorage.setItem(CACHE_TIMESTAMP_KEY, Date.now().toString());
     } catch (error) {
       console.error("Error fetching companies:", error);
+      setCompanies([]);
+      setFilteredCompanies([]);
     } finally {
       setLoading(false);
     }
@@ -111,11 +124,11 @@ const CategoryPage: React.FC = () => {
         <section className="bg-gray-50 py-12 sm:py-16">
           <div className="container mx-auto px-4">
             <div className="mb-8">
-              {filteredCompanies.length === 0 ? (
+              {filteredCompanies.length === 0 && (
                 <h2 className="text-2xl font-bold text-gray-900">
                   {t("no_companies")}
                 </h2>
-              ) : null}
+              )}
 
               {searchQuery && (
                 <p className="mt-2 text-gray-600">
@@ -124,7 +137,8 @@ const CategoryPage: React.FC = () => {
               )}
             </div>
 
-            {filteredCompanies.length > 0 ? (
+            {Array.isArray(filteredCompanies) &&
+            filteredCompanies.length > 0 ? (
               <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 {filteredCompanies.map((company) => (
                   <CompanyCard key={company.id} company={company} />
@@ -135,9 +149,7 @@ const CategoryPage: React.FC = () => {
                 <h3 className="mb-2 text-xl font-semibold">
                   {t("no_companies_found")}
                 </h3>
-                <p className="text-gray-600">
-                  {t("no_companies_description")}
-                </p>
+                <p className="text-gray-600">{t("no_companies_description")}</p>
               </div>
             )}
           </div>

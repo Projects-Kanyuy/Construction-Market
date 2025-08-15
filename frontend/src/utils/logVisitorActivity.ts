@@ -1,4 +1,4 @@
-import axios from "axios";
+// File: src/utils/logVisitorActivity.ts
 import { logActivity } from "../api/api";
 
 const STORAGE_KEY = "last_visitor_log";
@@ -13,16 +13,19 @@ export const logVisitorActivity = async () => {
   }
 
   try {
-    const ipRes = await axios.get("https://api.ipify.org?format=json");
-    const ip = ipRes.data.ip;
+    // Optional: get IP (can keep using ipify)
+    const ipRes = await fetch("https://api.ipify.org?format=json");
+    const { ip } = await ipRes.json();
 
+    const payload = {
+      type: "visit", // matches backend field 'type'
+      path: window.location.pathname,
+      referrer: document.referrer,
+      meta: { ip },
+    };
 
-    const response = await logActivity({
-      action: "Visitor logged",
-      details: `Visitor with IP ${ip} visited the site.`,
-      userId: null,
-    });
-    console.log('THIS IS THE RESPONSE: ', response);
+    const response = await logActivity(payload);
+    console.log("Visitor log response:", response.data);
 
     localStorage.setItem(STORAGE_KEY, now.toString());
   } catch (error) {

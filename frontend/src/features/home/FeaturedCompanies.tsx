@@ -8,38 +8,51 @@ import { useTranslation } from "react-i18next";
 
 const CACHE_KEY = "featured_companies";
 const CACHE_TIMESTAMP_KEY = "featured_companies_timestamp";
-const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
+const CACHE_EXPIRY = 24 * 60 * 60 * 1000;
+
+// Reuse helper
+function normalizeCompanies(data: any): CompanyData[] {
+  if (!data) return [];
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data.items)) return data.items;
+  return [];
+}
 
 const FeaturedCompanies: React.FC = React.memo(() => {
   const { t } = useTranslation();
   const [companies, setCompanies] = useState<CompanyData[]>([]);
 
-  // Load from cache if valid
+  // Load cached data
   useEffect(() => {
     const cached = localStorage.getItem(CACHE_KEY);
     const timestamp = localStorage.getItem(CACHE_TIMESTAMP_KEY);
     if (cached && timestamp) {
       const age = Date.now() - parseInt(timestamp, 10);
       if (age < CACHE_EXPIRY) {
-        setCompanies(JSON.parse(cached));
+        try {
+          setCompanies(normalizeCompanies(JSON.parse(cached)));
+        } catch {
+          setCompanies([]);
+        }
       }
     }
   }, []);
 
-  // Fetch companies and update cache and state
+  // Fetch companies
   const loadCompanies = useCallback(async () => {
     try {
       const response = await fetchCompanies();
-      const data = response.data.slice(0, 9);
+      const data = normalizeCompanies(response.data).slice(0, 9); // top 9
       setCompanies(data);
+
       localStorage.setItem(CACHE_KEY, JSON.stringify(data));
       localStorage.setItem(CACHE_TIMESTAMP_KEY, Date.now().toString());
     } catch (error) {
       console.error("Error fetching companies:", error);
+      setCompanies([]);
     }
   }, []);
 
-  // Always revalidate on mount (background update)
   useEffect(() => {
     loadCompanies();
   }, [loadCompanies]);
@@ -47,7 +60,7 @@ const FeaturedCompanies: React.FC = React.memo(() => {
   return (
     <section className="py-20">
       <div className="container mx-auto px-4">
-        <div className="mb-4 flex items-end justify-between ">
+        <div className="mb-4 flex items-end justify-between">
           <div>
             <h2 className="mb-3 text-3xl font-bold text-gray-900 md:text-4xl">
               {t("featured_companies")}
@@ -66,11 +79,20 @@ const FeaturedCompanies: React.FC = React.memo(() => {
           </Link>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {companies.map((company) => (
-            <CompanyCard key={company.id} company={company} />
-          ))}
-        </div>
+        {Array.isArray(companies) && companies.length > 0 ? (
+          <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {companies.map((company) => (
+              <CompanyCard key={company.id} company={company} />
+            ))}
+          </div>
+        ) : (
+          <div className="mt-10 rounded-lg bg-white p-8 text-center shadow">
+            <h3 className="mb-2 text-xl font-semibold">
+              {t("no_companies_found")}
+            </h3>
+            <p className="text-gray-600">{t("no_companies_description")}</p>
+          </div>
+        )}
 
         <div className="mt-10 text-center md:hidden">
           <Link
