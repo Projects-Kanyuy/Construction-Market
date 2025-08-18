@@ -39,7 +39,7 @@ const AdminCompanies = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [companies, setCompanies] = useState<CompanyData[]>([]);
-  const [categories, setCategories] = useState<Record<string, any>>([]);
+  const [categories, setCategories] = useState<Record<string, any>[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -158,6 +158,7 @@ const AdminCompanies = () => {
 
     const formData = new FormData(form);
 
+    // Remove old keys
     formData.delete("categoryIds");
     formData.delete("categories");
     formData.delete("logo");
@@ -165,8 +166,6 @@ const AdminCompanies = () => {
     if (imageFile) {
       formData.append("logo", imageFile);
     }
-
-    formData.delete("categoryIds");
 
     if (selectedCategories.length > 0) {
       formData.append("categoryIds", JSON.stringify(selectedCategories));
@@ -177,13 +176,17 @@ const AdminCompanies = () => {
     try {
       if (currentCompany) {
         const response = await updateCompany(currentCompany.id, formData);
-        setCompanies(
-          companies.map((c) => (c.id === currentCompany.id ? response.data : c))
+        setCompanies((prev) =>
+          prev.map((c) => (c.id === currentCompany.id ? response.data : c))
         );
         toast.success("Company updated successfully");
       } else {
         const response = await createCompany(formData);
-        setCompanies([response.data, ...companies]);
+        // Ensure companies is an array
+        setCompanies((prev) => [
+          response.data,
+          ...(Array.isArray(prev) ? prev : []),
+        ]);
         toast.success("Company created successfully");
       }
       setIsModalOpen(false);
@@ -240,97 +243,109 @@ const AdminCompanies = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
-              {companies.map((company) => (
-                <tr key={company.id}>
-                  <td className="whitespace-nowrap px-6 py-4">
-                    <div className="flex items-center">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
-                        {company.logo ? (
-                          <img
-                            src={`https://api.cpromart.site${company.logo}`}
-                            alt={company.name}
-                            className="h-full w-full rounded-full object-cover"
-                          />
-                        ) : (
-                          <Building2 size={16} className="text-gray-600" />
-                        )}
-                      </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">
-                          {company.name}
+              {Array.isArray(companies) && companies.length > 0 ? (
+                companies.map((company) => (
+                  <tr key={company.id}>
+                    <td className="whitespace-nowrap px-6 py-4">
+                      <div className="flex items-center">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
+                          {company.logo ? (
+                            <img
+                              src={`https://api.cpromart.site${company.logo}`}
+                              alt={company.name}
+                              className="h-full w-full rounded-full object-cover"
+                            />
+                          ) : (
+                            <Building2 size={16} className="text-gray-600" />
+                          )}
                         </div>
-                        <div className="text-sm text-gray-500">
-                          {company.username}
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900">
+                            {company.name}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {company.username}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4">
-                    <div className="text-sm text-gray-900">{company.email}</div>
-                    <div className="text-sm text-gray-500">{company.phone}</div>
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4">
-                    <div className="space-y-1">
-                      {company.categories?.map((category) => (
-                        <div
-                          key={category.id}
-                          className="text-sm text-gray-900 bg-gray-50 px-3 py-1 rounded-md"
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4">
+                      <div className="text-sm text-gray-900">
+                        {company.email}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {company.phone}
+                      </div>
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4">
+                      <div className="space-y-1">
+                        {company.categories?.map((category) => (
+                          <div
+                            key={category.id}
+                            className="text-sm text-gray-900 bg-gray-50 px-3 py-1 rounded-md"
+                          >
+                            {category.name}
+                          </div>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4">
+                      <div className="flex items-center">
+                        <span
+                          className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
+                            company.status === "APPROVED"
+                              ? "bg-green-100 text-green-800"
+                              : company.status === "PENDING"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
                         >
-                          {category.name}
-                        </div>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4">
-                    <div className="flex items-center">
-                      <span
-                        className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
-                          company.status === "APPROVED"
-                            ? "bg-green-100 text-green-800"
-                            : company.status === "PENDING"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {company.status}
-                      </span>
+                          {company.status}
+                        </span>
+                        <button
+                          onClick={() => handleStatusChange(company)}
+                          className="ml-1 text-gray-500 hover:text-indigo-600"
+                        >
+                          <Pencil size={14} />
+                        </button>
+                      </div>
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4">
                       <button
-                        onClick={() => handleStatusChange(company)}
-                        className="ml-1 text-gray-500 hover:text-indigo-600"
+                        onClick={() =>
+                          navigate("/admin/projects", { state: { company } })
+                        }
+                        className="flex items-center text-indigo-600 hover:text-indigo-900"
                       >
-                        <Pencil size={14} />
+                        {company.projects?.length || 0} Project(s)
+                        <ExternalLink size={14} className="ml-1" />
                       </button>
-                    </div>
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4">
-                    <button
-                      onClick={() =>
-                        navigate("/admin/projects", { state: { company } })
-                      }
-                      className="flex items-center text-indigo-600 hover:text-indigo-900"
-                    >
-                      {company.projects?.length || 0} Project(s)
-                      <ExternalLink size={14} className="ml-1" />
-                    </button>
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
-                    <button
-                      onClick={() => handleEditCompany(company)}
-                      className="mr-2 text-indigo-600 hover:text-indigo-900"
-                    >
-                      <Pencil size={16} />
-                    </button>
-                    {user.role === "SUPER_ADMIN" && (
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                       <button
-                        onClick={() => handleDeleteCompany(company.id)}
-                        className="text-red-600 hover:text-red-900"
+                        onClick={() => handleEditCompany(company)}
+                        className="mr-2 text-indigo-600 hover:text-indigo-900"
                       >
-                        <Trash2 size={16} />
+                        <Pencil size={16} />
                       </button>
-                    )}
+                      {user.role === "SUPER_ADMIN" && (
+                        <button
+                          onClick={() => handleDeleteCompany(company.id)}
+                          className="text-red-600 hover:text-red-900"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="text-center py-4 text-gray-500">
+                    No companies available.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
