@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import { Suspense, lazy, useEffect } from "react";
 
-import ProtectedRoute from "./context/AdminProtectedRoute";
+import AdminProtectedRoute from "./context/AdminProtectedRoute";
 import CompanyProtectedRoute from "./context/CompanyProtectedRoute";
 import { getLocation } from "./utils/location";
 import Spinner from "./components/common/Spinner";
@@ -17,7 +17,9 @@ import { initFacebookPixel } from "./utils/facebookPixel";
 // Lazy loaded components
 const HomePage = lazy(() => import("./features/home/HomePage"));
 const CategoryPage = lazy(() => import("./features/category/CategoryPage"));
-const CompanyDetailPage = lazy(() => import("./features/company/CompanyDetailPage"));
+const CompanyDetailPage = lazy(
+  () => import("./features/company/CompanyDetailPage")
+);
 const CompaniesPage = lazy(() => import("./features/company/CompaniesListing"));
 const ContactPage = lazy(() => import("./features/contact/ContactPage"));
 const AboutPage = lazy(() => import("./features/about/AboutPage"));
@@ -30,9 +32,15 @@ const AdminCategories = lazy(() => import("./features/admin/AdminCategories"));
 const AdminProjects = lazy(() => import("./features/admin/AdminProjects"));
 
 // Company Dashboard
-const CompanyDashboard = lazy(() => import("./features/company/dashboard/CompanyDashboard"));
-const CompanyProfile = lazy(() => import("./features/company/dashboard/CompanyProfile"));
-const CompanyProjects = lazy(() => import("./features/company/dashboard/CompanyProjects"));
+const CompanyDashboard = lazy(
+  () => import("./features/company/dashboard/CompanyDashboard")
+);
+const CompanyProfile = lazy(
+  () => import("./features/company/dashboard/CompanyProfile")
+);
+const CompanyProjects = lazy(
+  () => import("./features/company/dashboard/CompanyProjects")
+);
 
 // Auth
 const SignInPage = lazy(() => import("./features/auth/SignInPage"));
@@ -52,9 +60,9 @@ function App() {
     <>
       <Toaster position="top-right" />
       <Router>
-        {/* Suspense fallback can be a spinner or simple text */}
         <Suspense fallback={<Spinner />}>
           <Routes>
+            {/* Public Routes */}
             <Route path="/" element={<HomePage />} />
             <Route path="/companies" element={<CompaniesPage />} />
             <Route path="/category/:categoryId" element={<CategoryPage />} />
@@ -66,9 +74,9 @@ function App() {
             <Route
               path="/admin"
               element={
-                <ProtectedRoute>
+                <AdminProtectedRoute>
                   <AdminDashboard />
-                </ProtectedRoute>
+                </AdminProtectedRoute>
               }
             >
               <Route index element={<AdminUsers />} />
@@ -92,12 +100,12 @@ function App() {
               <Route path="projects" element={<CompanyProjects />} />
             </Route>
 
-            {/* Redirect all other routes to home */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-
-            {/* login and Register page routes */}
+            {/* Auth Routes */}
             <Route path="/signin" element={<SignInPage />} />
             <Route path="/register" element={<RegisterPage />} />
+
+            {/* Catch-all */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
       </Router>

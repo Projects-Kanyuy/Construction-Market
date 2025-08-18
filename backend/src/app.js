@@ -55,7 +55,8 @@ const uploadsDir = process.env.UPLOAD_DIR || "uploads";
 app.use("/uploads", express.static(path.join(__dirname, "..", uploadsDir)));
 
 // Routes
-app.use("/api/auth", authRoutes);
+app.use("/api/users", authRoutes);
+
 app.use("/api/companies", companyRoutes);
 app.use("/api/activity_logs", activityLogRoutes);
 app.use("/api/health", healthRoutes);

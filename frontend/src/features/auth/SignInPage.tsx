@@ -12,7 +12,7 @@ import { Helmet } from "react-helmet-async";
 const SignInPage: React.FC = () => {
   const { login } = useContext(AuthContext);
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
   });
   const [loading, setLoading] = useState(false);
@@ -24,28 +24,24 @@ const SignInPage: React.FC = () => {
 
     setLoading(true);
     try {
-      const res = await loginUser(formData);
+      const res = await loginUser(formData); // expects { email, password }
       const { token, user } = res.data;
 
       login(user, token);
-
       toast.success("Login successful!");
 
-      switch (user.role) {
-        case "ADMIN":
-        case "SUPER_ADMIN":
-          navigate("/admin");
-          break;
-        case "COMPANY_ADMIN":
-          navigate("/dashboard");
-          break;
-        default:
-          navigate("/");
-          break;
+      // Role-based redirects
+      const role = user.role.toLowerCase(); // normalize to lowercase
+      if (role === "admin" || role === "super_admin") {
+        navigate("/admin");
+      } else if (role === "company_admin") {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
       }
     } catch (error) {
       toast.error(
-        "Login failed!, Please make sure you have a good network connection and your credentials are valid"
+        "Login failed! Please check your credentials and network connection."
       );
       console.error("Login error:", error);
     } finally {
@@ -82,19 +78,19 @@ const SignInPage: React.FC = () => {
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="-space-y-px rounded-md shadow-sm">
               <div>
-                <label htmlFor="username" className="sr-only">
-                  Username
+                <label htmlFor="email" className="sr-only">
+                  Email
                 </label>
                 <input
-                  id="username"
-                  name="username"
-                  type="text"
+                  id="email"
+                  name="email"
+                  type="email"
                   required
                   className="relative block w-full rounded-t-md border-0 px-1 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:outline-none focus:ring-[#3B546A] sm:text-sm sm:leading-6"
-                  placeholder="Username"
-                  value={formData.username}
+                  placeholder="Email"
+                  value={formData.email}
                   onChange={(e) =>
-                    setFormData({ ...formData, username: e.target.value })
+                    setFormData({ ...formData, email: e.target.value })
                   }
                 />
               </div>

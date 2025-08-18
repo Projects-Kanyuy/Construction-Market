@@ -1,14 +1,23 @@
-import { Navigate } from 'react-router-dom';
-import { AuthContext } from './AuthContext';
-import { ReactNode, useContext } from 'react';
+import { useContext } from "react";
+import { AuthContext } from "./AuthContext";
+import { Navigate } from "react-router-dom";
 
-const ProtectedRoute = ({ children }: {children: ReactNode}) => {
-    const { user } = useContext(AuthContext);
-    if (!user || (user.role !== 'ADMIN' && user.role !== 'SUPER_ADMIN')) {
-    return <Navigate to="/" replace />;
+interface Props {
+  children: JSX.Element;
+}
+
+const AdminProtectedRoute: React.FC<Props> = ({ children }) => {
+  const { user, isAuthenticated } = useContext(AuthContext);
+
+  if (
+    !isAuthenticated ||
+    !user ||
+    !["admin", "super_admin"].includes(user.role.toLowerCase())
+  ) {
+    return <Navigate to="/signin" replace />;
   }
-console.log(`${user.role}`);
+
   return children;
 };
 
-export default ProtectedRoute;
+export default AdminProtectedRoute;

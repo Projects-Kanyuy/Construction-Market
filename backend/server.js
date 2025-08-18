@@ -1,18 +1,22 @@
+import mongoose from "mongoose";
 import dotenv from "dotenv";
-dotenv.config();
-import { connectDB } from "./src/config/db.js";
 import app from "./src/app.js";
+
+dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 
-async function start() {
-  await connectDB();
-  app.listen(PORT, () => {
-    console.log(`API ru nning on http://localhost:${PORT}`);
-  });
-}
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("✅ MongoDB Atlas connected");
 
-start().catch((err) => {
-  console.error("FATAL: failed to start server", err);
-  process.exit(1);
-});
+    // Start Express server
+    app.listen(PORT, () => {
+      console.log(`API running on http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("❌ MongoDB connection error:", err);
+    process.exit(1);
+  });

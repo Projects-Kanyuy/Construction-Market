@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
 dotenv.config();
-import { connectDB } from "../src/config/db.js";
-import User from "../src/models/User.js";
+import { connectDB } from "../config/db.js";
+import User from "../models/User.js";
 
 async function run() {
   await connectDB();
   const email = process.env.SEED_ADMIN_EMAIL || "admin@cipromart.local";
-  const password = process.env.SEED_ADMIN_PASSWORD || "ChangeMe123!";
+  const password = process.env.SEED_ADMIN_PASSWORD || "admin123";
   const name = process.env.SEED_ADMIN_NAME || "Admin";
 
   let user = await User.findOne({ email });

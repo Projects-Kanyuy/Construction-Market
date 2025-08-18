@@ -1,5 +1,5 @@
-import React, { createContext, useEffect, useState, ReactNode } from 'react';
-import { jwtDecode } from 'jwt-decode';
+import React, { createContext, useEffect, useState, ReactNode } from "react";
+import { jwtDecode } from "jwt-decode";
 
 interface AuthContextType {
   user: any;
@@ -22,38 +22,40 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
+    const storedToken = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
 
     if (storedToken && storedUser) {
-        const decoded: any = jwtDecode(storedToken);
-        const now = Date.now() / 1000;
+      const decoded: any = jwtDecode(storedToken);
+      const now = Date.now() / 1000;
 
-        if (decoded.exp < now) {
+      if (decoded.exp < now) {
         logout();
-        } else {
+      } else {
         setToken(storedToken);
         setUser(JSON.parse(storedUser));
-        }
+      }
     }
   }, []);
 
   const login = (user: any, token: string) => {
-    localStorage.setItem('user', JSON.stringify(user));
-    localStorage.setItem('token', token);
+    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("token", token);
     setUser(user);
     setToken(token);
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setToken(null);
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated: !!token, logout, login }}>
+    <AuthContext.Provider
+      value={{ user, token, isAuthenticated: !!token, logout, login }}
+    >
       {children}
     </AuthContext.Provider>
   );
