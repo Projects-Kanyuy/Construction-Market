@@ -12,6 +12,7 @@ import companyRoutes from "./routes/companyRoutes.js";
 import activityLogRoutes from "./routes/activityLogRoutes.js";
 import healthRoutes from "./routes/healthRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
+import categoriesRouter from "./routes/categoriesRoutes.js";
 
 const app = express();
 
@@ -60,6 +61,7 @@ app.use("/api/users", authRoutes);
 app.use("/api/companies", companyRoutes);
 app.use("/api/activity_logs", activityLogRoutes);
 app.use("/api/health", healthRoutes);
+app.use("/api/categories", categoriesRouter);
 
 // Health root
 app.get("/", (_req, res) => res.json({ ok: true, service: "cipromart-api" }));
