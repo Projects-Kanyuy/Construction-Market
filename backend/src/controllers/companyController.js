@@ -74,8 +74,8 @@ export const updateCompany = async (req, res) => {
   try {
     const body = req.body;
 
-    if (req.files?.logo) body.logo = req.files.logo[0].path;
-    if (req.files?.banner) body.banner = req.files.banner[0].path;
+    if (req.files?.logo) body.logoUrl = req.files.logo[0].path;
+    if (req.files?.banner) body.bannerUrl = req.files.banner[0].path;
     if (req.files?.images) body.images = req.files.images.map((f) => f.path);
 
     const item = await Company.findByIdAndUpdate(req.params.id, body, {

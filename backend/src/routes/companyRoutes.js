@@ -6,9 +6,8 @@ import {
   updateCompany,
   deleteCompany,
 } from "../controllers/companyController.js";
-import upload from "../middleware/upload.js"; // Cloudinary upload middleware
+import { companyUploader } from "../middleware/upload.js"; // Cloudinary upload middleware
 import { protect, adminOnly } from "../middleware/auth.js";
-import { companyUploader } from "../utils/uploader.js";
 
 const router = Router();
 

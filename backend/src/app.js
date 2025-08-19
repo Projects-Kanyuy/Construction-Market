@@ -52,10 +52,6 @@ app.use(express.urlencoded({ extended: true }));
 const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
 app.use("/api/", apiLimiter);
 
-// Static uploads
-const uploadsDir = process.env.UPLOAD_DIR || "uploads";
-app.use("/uploads", express.static(path.resolve(uploadsDir)));
-
 // Routes
 app.use("/api/users", authRoutes);
 
