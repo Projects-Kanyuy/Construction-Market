@@ -8,6 +8,7 @@ import {
 } from "../controllers/companyController.js";
 import upload from "../middleware/upload.js"; // Cloudinary upload middleware
 import { protect, adminOnly } from "../middleware/auth.js";
+import { companyUploader } from "../utils/uploader.js";
 
 const router = Router();
 
@@ -17,31 +18,11 @@ router.get("/:id", getCompany);
 
 // Protected admin routes
 // Accepts logo, banner, and multiple images
-router.post(
-  "/",
-  protect,
-  adminOnly,
-  upload.fields([
-    { name: "logo", maxCount: 1 },
-    { name: "banner", maxCount: 1 },
-    { name: "images", maxCount: 10 },
-  ]),
-  createCompany
-);
+router.post("/", protect, adminOnly, companyUploader, createCompany);
 
-router.put(
-  "/:id",
-  protect,
-  adminOnly,
-  upload.fields([
-    { name: "logo", maxCount: 1 },
-    { name: "banner", maxCount: 1 },
-    { name: "images", maxCount: 10 },
-  ]),
-  updateCompany
-);
+router.put("/:id", protect, adminOnly, companyUploader, updateCompany);
 
 router.delete("/:id", protect, adminOnly, deleteCompany);
 
-router.post("/:id/increment-view", incrementCompanyViewCount);
+// router.post("/:id/increment-view", incrementCompanyViewCount);
 export default router;

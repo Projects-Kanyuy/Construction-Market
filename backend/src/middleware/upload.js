@@ -36,10 +36,7 @@ const upload = multer({ storage });
 export const companyUploader = upload.fields([
   { name: "logo", maxCount: 1 },
   { name: "banner", maxCount: 1 },
-  { name: "images", maxCount: 5 },
+  { name: "images", maxCount: 10 },
 ]);
 
 export default upload;
-
-console.log("Cloudinary API Key:", process.env.CLOUDINARY_API_KEY);
-console.log("Cloudinary Cloud Name:", process.env.CLOUDINARY_CLOUD_NAME);

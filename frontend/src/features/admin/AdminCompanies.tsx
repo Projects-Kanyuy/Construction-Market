@@ -38,6 +38,7 @@ interface CompanyData {
 const AdminCompanies = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+
   const [companies, setCompanies] = useState<CompanyData[]>([]);
   const [categories, setCategories] = useState<Record<string, any>[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,8 +53,17 @@ const AdminCompanies = () => {
   const [newStatus, setNewStatus] = useState<
     "PENDING" | "APPROVED" | "REJECTED"
   >("PENDING");
-  const [imageFile, setImageFile] = useState<File | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+  const [imagesFiles, setImagesFiles] = useState<File[]>([]);
+
+  // modal image
+  // For displaying previews of existing or newly uploaded images
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [bannerPreview, setBannerPreview] = useState<string | null>(null);
+  const [imagesPreview, setImagesPreview] = useState<string[]>([]);
 
   useEffect(() => {
     loadCompanies();
@@ -64,7 +74,7 @@ const AdminCompanies = () => {
     setLoading(true);
     try {
       const response = await fetchCompanies(4.9559, 9.8598);
-      setCompanies(response.data);
+      setCompanies(response.data || []);
     } catch (error) {
       console.error("Error loading companies:", error);
     } finally {
@@ -75,7 +85,7 @@ const AdminCompanies = () => {
   const loadCategories = async () => {
     try {
       const response = await fetchCategories();
-      setCategories(response.data);
+      setCategories(response.data || []);
     } catch (error) {
       console.error("Error loading categories:", error);
     }
@@ -85,11 +95,18 @@ const AdminCompanies = () => {
     setCurrentCompany(null);
     setIsModalOpen(true);
     setSelectedCategories([]);
+    setLogoFile(null);
+    setBannerFile(null);
+    setImagesFiles([]);
   };
 
   const handleEditCompany = (company: CompanyData) => {
     setCurrentCompany(company);
     setIsModalOpen(true);
+    setSelectedCategories(company.categories?.map((c) => c.id) || []);
+    setLogoFile(null);
+    setBannerFile(null);
+    setImagesFiles([]);
   };
 
   const handleDeleteCompany = (id: number) => {
@@ -102,10 +119,37 @@ const AdminCompanies = () => {
     setNewStatus(company.status);
     setIsStatusModalOpen(true);
   };
+  const removeLogo = () => {
+    setLogoFile(null);
+    setLogoPreview(null);
+  };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setImageFile(e.target.files[0]);
+  const removeBanner = () => {
+    setBannerFile(null);
+    setBannerPreview(null);
+  };
+
+  const removeImage = (index: number) => {
+    setImagesFiles((prev) => prev.filter((_, i) => i !== index));
+    setImagesPreview((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleImageChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: "logo" | "banner" | "images"
+  ) => {
+    if (!e.target.files) return;
+
+    if (type === "logo") {
+      setLogoFile(e.target.files[0]);
+      setLogoPreview(URL.createObjectURL(e.target.files[0]));
+    } else if (type === "banner") {
+      setBannerFile(e.target.files[0]);
+      setBannerPreview(URL.createObjectURL(e.target.files[0]));
+    } else if (type === "images") {
+      const files = Array.from(e.target.files);
+      setImagesFiles(files);
+      setImagesPreview(files.map((file) => URL.createObjectURL(file)));
     }
   };
 
@@ -121,11 +165,12 @@ const AdminCompanies = () => {
     setIsLoading(true);
     try {
       await updateCompanyStatus(currentCompany.id, newStatus);
-      setCompanies(
-        companies.map((c) =>
+      setCompanies((prev) => {
+        if (!Array.isArray(prev)) return [];
+        return prev.map((c) =>
           c.id === currentCompany.id ? { ...c, status: newStatus } : c
-        )
-      );
+        );
+      });
       setIsStatusModalOpen(false);
       toast.success("Status updated successfully");
     } catch (error) {
@@ -141,7 +186,10 @@ const AdminCompanies = () => {
     setIsLoading(true);
     try {
       await deleteCompany(companyToDelete);
-      setCompanies(companies.filter((c) => c.id !== companyToDelete));
+      setCompanies((prev) => {
+        if (!Array.isArray(prev)) return [];
+        return prev.filter((c) => c.id !== companyToDelete);
+      });
       setIsDeleteModalOpen(false);
       toast.success("Company deleted successfully");
     } catch (error) {
@@ -154,49 +202,64 @@ const AdminCompanies = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = e.currentTarget;
+    const formData = new FormData();
 
-    const formData = new FormData(form);
+    const fields = [
+      "name",
+      "username",
+      "email",
+      "phone",
+      "location",
+      "description",
+    ];
+    fields.forEach((field) => {
+      const value =
+        (e.currentTarget.elements.namedItem(field) as HTMLInputElement)
+          ?.value || "";
+      formData.append(field, value);
+    });
 
-    // Remove old keys
-    formData.delete("categoryIds");
-    formData.delete("categories");
-    formData.delete("logo");
+    selectedCategories.forEach((id) =>
+      formData.append("categories", id.toString())
+    );
 
-    if (imageFile) {
-      formData.append("logo", imageFile);
-    }
-
-    if (selectedCategories.length > 0) {
-      formData.append("categoryIds", JSON.stringify(selectedCategories));
-    }
+    if (logoFile) formData.append("logo", logoFile);
+    if (bannerFile) formData.append("banner", bannerFile);
+    imagesFiles.forEach((file) => formData.append("images", file));
 
     setIsLoading(true);
-
     try {
       if (currentCompany) {
         const response = await updateCompany(currentCompany.id, formData);
-        setCompanies((prev) =>
-          prev.map((c) => (c.id === currentCompany.id ? response.data : c))
-        );
+        setCompanies((prev) => {
+          if (!Array.isArray(prev)) return [response.data];
+          return prev.map((c) =>
+            c.id === currentCompany.id ? response.data : c
+          );
+        });
         toast.success("Company updated successfully");
       } else {
         const response = await createCompany(formData);
-        // Ensure companies is an array
-        setCompanies((prev) => [
-          response.data,
-          ...(Array.isArray(prev) ? prev : []),
-        ]);
+        setCompanies((prev) =>
+          Array.isArray(prev) ? [response.data, ...prev] : [response.data]
+        );
         toast.success("Company created successfully");
       }
       setIsModalOpen(false);
-      setImageFile(null);
+      setLogoFile(null);
+      setBannerFile(null);
+      setImagesFiles([]);
     } catch (error) {
       toast.error("Error saving company");
       console.error("Error saving company:", error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const getImageUrl = (path?: string) => {
+    if (!path) return null;
+    return `https://api.cpromart.site/${path.replace(/^\/?/, "")}`;
   };
 
   return (
@@ -251,7 +314,7 @@ const AdminCompanies = () => {
                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
                           {company.logo ? (
                             <img
-                              src={`https://api.cpromart.site${company.logo}`}
+                              src={getImageUrl(company.logo)!}
                               alt={company.name}
                               className="h-full w-full rounded-full object-cover"
                             />
@@ -317,7 +380,7 @@ const AdminCompanies = () => {
                         }
                         className="flex items-center text-indigo-600 hover:text-indigo-900"
                       >
-                        {company.projects?.length || 0} Project(s)
+                        {company.projects?.length || 0} Project(s){" "}
                         <ExternalLink size={14} className="ml-1" />
                       </button>
                     </td>
@@ -438,9 +501,12 @@ const AdminCompanies = () => {
                   id="categories"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
                   onChange={handleCategoryChange}
-                  defaultValue={
-                    currentCompany?.categories?.map((c) => c.id.toString()) ||
-                    selectedCategories.map((id) => id.toString())
+                  value={
+                    selectedCategories.length > 0
+                      ? selectedCategories.map((id) => id.toString())
+                      : currentCompany?.categories?.map((c) =>
+                          c.id.toString()
+                        ) || []
                   }
                 >
                   {categories.map((category: any) => (
@@ -449,6 +515,7 @@ const AdminCompanies = () => {
                     </option>
                   ))}
                 </select>
+
                 <p className="mt-1 text-xs text-gray-500">
                   Hold Ctrl (or Cmd on Mac) to select multiple categories
                 </p>
@@ -545,7 +612,7 @@ const AdminCompanies = () => {
                     name="logo"
                     id="logo"
                     accept="image/*"
-                    onChange={handleImageChange}
+                    onChange={(e) => handleImageChange(e, "logo")}
                   />
                 </div>
                 <div>
@@ -560,7 +627,7 @@ const AdminCompanies = () => {
                     name="banner"
                     id="banner"
                     accept="image/*"
-                    onChange={handleImageChange}
+                    onChange={(e) => handleImageChange(e, "banner")}
                   />
                 </div>
                 <div>
@@ -576,10 +643,67 @@ const AdminCompanies = () => {
                     id="images"
                     multiple
                     accept="image/*"
-                    onChange={handleImageChange}
+                    onChange={(e) => handleImageChange(e, "images")}
                   />
                 </div>
               </div>
+              {/* Logo Preview */}
+              {logoPreview && (
+                <div className="relative w-24 h-24 mt-2">
+                  <img
+                    src={logoPreview}
+                    alt="Logo Preview"
+                    className="rounded-lg object-cover w-full h-full"
+                  />
+                  <button
+                    type="button"
+                    onClick={removeLogo}
+                    className="absolute top-0 right-0 bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              )}
+
+              {/* Banner Preview */}
+              {bannerPreview && (
+                <div className="relative w-full h-40 mt-2">
+                  <img
+                    src={bannerPreview}
+                    alt="Banner Preview"
+                    className="rounded-lg object-cover w-full h-full"
+                  />
+                  <button
+                    type="button"
+                    onClick={removeBanner}
+                    className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              )}
+
+              {/* Additional Images Previews */}
+              {imagesPreview.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {imagesPreview.map((img, i) => (
+                    <div key={i} className="relative w-24 h-24">
+                      <img
+                        src={img}
+                        alt={`Preview ${i}`}
+                        className="rounded-lg object-cover w-full h-full"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(i)}
+                        className="absolute top-0 right-0 bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               {/* Description */}
               <div>
