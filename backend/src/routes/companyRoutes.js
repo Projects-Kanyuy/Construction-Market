@@ -43,4 +43,5 @@ router.put(
 
 router.delete("/:id", protect, adminOnly, deleteCompany);
 
+router.post("/:id/increment-view", incrementCompanyViewCount);
 export default router;

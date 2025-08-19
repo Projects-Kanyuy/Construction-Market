@@ -56,7 +56,6 @@ export const createCompany = async (req, res) => {
   try {
     const body = req.body;
 
-    // Cloudinary files already have .path with full URL
     if (req.files?.logo) body.logoUrl = req.files.logo[0].path;
     if (req.files?.banner) body.bannerUrl = req.files.banner[0].path;
     if (req.files?.images) body.images = req.files.images.map((f) => f.path);
@@ -74,20 +73,17 @@ export const updateCompany = async (req, res) => {
   try {
     const body = req.body;
 
-    if (req.files?.logo) body.logo = req.files.logo[0].path;
-    if (req.files?.banner) body.banner = req.files.banner[0].path;
+    // Match schema field names
+    if (req.files?.logo) body.logoUrl = req.files.logo[0].path;
+    if (req.files?.banner) body.bannerUrl = req.files.banner[0].path;
     if (req.files?.images) body.images = req.files.images.map((f) => f.path);
 
-    const item = await Company.findByIdAndUpdate(req.params.id, body, {
-      new: true,
-    });
-
-    if (!item)
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ message: "Company not found" });
-
-    res.json(item);
+    const updatedCompany = await Company.findByIdAndUpdate(
+      req.params.id,
+      body,
+      { new: true }
+    );
+    res.status(StatusCodes.OK).json(updatedCompany);
   } catch (error) {
     console.error("Error updating company:", error);
     res.status(500).json({ message: "Failed to update company" });

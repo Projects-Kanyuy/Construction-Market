@@ -24,35 +24,26 @@ const CompanyDetailPage: React.FC = () => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
-  const [company, setCompany] = React.useState<CompanyData | null>(location.state?.company || null);
+  const [company, setCompany] = React.useState<CompanyData | null>(
+    location.state?.company || null
+  );
   const [loading, setLoading] = React.useState<boolean>(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
 
     if (!company && id) {
-      try {
-        const companyId = parseInt(id, 10);
-        if (!isNaN(companyId)) {
-          setLoading(true);
-          fetchCompanyById(companyId)
-            .then((res) => setCompany(res.data))
-            .catch((err) => console.error('Failed to fetch company:', err))
-            .finally(() => setLoading(false));
-        }
-      } catch (error) {
-        console.error('Invalid ID:', error);
-      }
+      setLoading(true);
+      fetchCompanyById(id)
+        .then((res) => setCompany(res.data))
+        .catch((err) => console.error("Failed to fetch company:", err))
+        .finally(() => setLoading(false));
     }
   }, [company, id]);
 
-  if (loading) {
-    return (
-      <Spinner />
-    );
-  }
+  if (loading) return <Spinner />;
 
-  if (!company) {
+  if (!company)
     return (
       <Layout>
         <div className="container mx-auto px-4 py-20">
@@ -67,7 +58,6 @@ const CompanyDetailPage: React.FC = () => {
         </div>
       </Layout>
     );
-  }
 
   const whatsappLink = `https://wa.me/${company.phone?.replace(/\D/g, "")}`;
 
@@ -80,13 +70,14 @@ const CompanyDetailPage: React.FC = () => {
           content={t("company_description", { company_name: company.name })}
         />
       </Helmet>
+
       {/* Company Header */}
       <section className="bg-white">
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col items-start gap-6 md:flex-row md:items-center">
             <div className="h-24 w-24 overflow-hidden rounded-lg bg-gray-200 md:h-32 md:w-32">
               <img
-                src={`https://api.cpromart.site${company.logo}`}
+                src={company.logoUrl || "/placeholder-logo.png"}
                 alt={company.name}
                 className="h-full w-full object-cover"
               />
@@ -96,26 +87,9 @@ const CompanyDetailPage: React.FC = () => {
               <h1 className="mb-2 text-3xl font-bold text-gray-900 md:text-4xl">
                 {company.name}
               </h1>
-
-              <div className="mb-4 flex flex-wrap items-center gap-4">
-                <div className="flex items-center">
-                  <MapPin className="mr-1 h-5 w-5 text-gray-500" />
-                  <span className="text-gray-700">{company.location}</span>
-                </div>
-
-                {/* categories page deleted so i commented this out */}
-                {/* <div className="flex flex-wrap gap-2">
-                  {company.categories?.map((category) => (
-                    <Link
-                      key={category.id}
-                      to={`/category/${category.name}`}
-                      state={{ category }}
-                      className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-200"
-                    >
-                      {category.name}
-                    </Link>
-                  ))}
-                </div> */}
+              <div className="mb-4 flex items-center gap-4">
+                <MapPin className="mr-1 h-5 w-5 text-gray-500" />
+                <span className="text-gray-700">{company.location}</span>
               </div>
             </div>
 
@@ -126,7 +100,11 @@ const CompanyDetailPage: React.FC = () => {
                 rel="noopener noreferrer"
               >
                 <Button
-                onClick={() => trackCustomEvent('ContactViaWhatsApp', { company: company.name })}
+                  onClick={() =>
+                    trackCustomEvent("ContactViaWhatsApp", {
+                      company: company.name,
+                    })
+                  }
                   variant="secondary"
                   size="large"
                   icon={<Phone size={18} />}
@@ -153,7 +131,7 @@ const CompanyDetailPage: React.FC = () => {
                 <p className="text-gray-700">{company.description}</p>
               </div>
 
-              {/* Past Projects */}
+              {/* Projects */}
               <div className="mb-12 rounded-xl bg-white p-6 shadow-sm md:p-8">
                 <h2 className="mb-6 text-2xl font-bold text-gray-900">
                   {t("projects")}
@@ -168,12 +146,11 @@ const CompanyDetailPage: React.FC = () => {
                       >
                         <div className="h-64 w-full overflow-hidden bg-gray-200">
                           <img
-                            src={`https://api.cpromart.site${project.image}`}
+                            src={project.image || "/placeholder-project.png"}
                             alt={project.title}
                             className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
                           />
                         </div>
-
                         <div className="p-6">
                           <div className="mb-3 flex items-center justify-between">
                             <h3 className="text-xl font-bold text-gray-900">
@@ -184,7 +161,6 @@ const CompanyDetailPage: React.FC = () => {
                               <span>{project.year}</span>
                             </div>
                           </div>
-
                           <p className="text-gray-700">{project.description}</p>
                         </div>
                       </div>
@@ -194,9 +170,28 @@ const CompanyDetailPage: React.FC = () => {
                   <p className="text-gray-600">{t("no_projects")}</p>
                 )}
               </div>
+
+              {/* Optional Gallery */}
+              {company.images && company.images.length > 0 && (
+                <div className="mb-12">
+                  <h2 className="mb-4 text-2xl font-bold text-gray-900">
+                    Gallery
+                  </h2>
+                  <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+                    {company.images.map((img, idx) => (
+                      <img
+                        key={idx}
+                        src={img}
+                        alt={`${company.name}-${idx}`}
+                        className="h-32 w-full object-cover rounded-lg"
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Contact Information Sidebar */}
+            {/* Contact Sidebar */}
             <div className="order-1 lg:order-2">
               <div className="sticky top-24 rounded-xl bg-white p-6 shadow-sm md:p-8">
                 <h2 className="mb-6 text-xl font-bold text-gray-900">
@@ -251,67 +246,64 @@ const CompanyDetailPage: React.FC = () => {
                   company.twitter ||
                   company.instagram ||
                   company.linkedin) && (
-                    <div className="mt-8">
-                      <h3 className="mb-4 text-lg font-medium text-gray-900">
-                        {t("social_media")}
-                      </h3>
-                      <div className="flex space-x-4">
-                        {company.website && (
-                          <a
-                            href={company.website}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
-                          >
-                            <Globe size={18} />
-                          </a>
-                        )}
-                        {company.facebook && (
-                          <a
-                            href={company.facebook}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
-                          >
-                            <Facebook size={18} />
-                          </a>
-                        )}
-
-                        {company.twitter && (
-                          <a
-                            href={company.twitter}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
-                          >
-                            <Twitter size={18} />
-                          </a>
-                        )}
-
-                        {company.instagram && (
-                          <a
-                            href={company.instagram}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
-                          >
-                            <Instagram size={18} />
-                          </a>
-                        )}
-
-                        {company.linkedin && (
-                          <a
-                            href={company.linkedin}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
-                          >
-                            <Linkedin size={18} />
-                          </a>
-                        )}
-                      </div>
+                  <div className="mt-8">
+                    <h3 className="mb-4 text-lg font-medium text-gray-900">
+                      {t("social_media")}
+                    </h3>
+                    <div className="flex space-x-4">
+                      {company.website && (
+                        <a
+                          href={company.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
+                        >
+                          <Globe size={18} />
+                        </a>
+                      )}
+                      {company.facebook && (
+                        <a
+                          href={company.facebook}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
+                        >
+                          <Facebook size={18} />
+                        </a>
+                      )}
+                      {company.twitter && (
+                        <a
+                          href={company.twitter}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
+                        >
+                          <Twitter size={18} />
+                        </a>
+                      )}
+                      {company.instagram && (
+                        <a
+                          href={company.instagram}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
+                        >
+                          <Instagram size={18} />
+                        </a>
+                      )}
+                      {company.linkedin && (
+                        <a
+                          href={company.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-[#3B546A] hover:text-white"
+                        >
+                          <Linkedin size={18} />
+                        </a>
+                      )}
                     </div>
-                  )}
+                  </div>
+                )}
 
                 {/* CTA Button */}
                 <div className="mt-8">
