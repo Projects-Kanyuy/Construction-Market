@@ -19,7 +19,7 @@ const companySchema = new mongoose.Schema(
     verified: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
     tags: [{ type: String, index: true }],
-  },
+},
   { timestamps: true }
 );
 

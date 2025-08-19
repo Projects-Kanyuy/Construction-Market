@@ -366,7 +366,7 @@ const AdminCompanies = () => {
               <X size={20} />
             </button>
           </div>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="p-6 space-y-4">
               {/* Basic Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -418,12 +418,13 @@ const AdminCompanies = () => {
                       name="password"
                       id="password"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
-                      required={!currentCompany}
+                      required
                     />
                   </div>
                 </div>
               )}
 
+              {/* Categories */}
               <div>
                 <label
                   htmlFor="categories"
@@ -453,7 +454,7 @@ const AdminCompanies = () => {
                 </p>
               </div>
 
-              {/* Contact Information */}
+              {/* Contact & Location */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label
@@ -487,7 +488,6 @@ const AdminCompanies = () => {
                 </div>
               </div>
 
-              {/* Location */}
               <div>
                 <label
                   htmlFor="location"
@@ -506,109 +506,79 @@ const AdminCompanies = () => {
 
               {/* Social Media */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label
-                    htmlFor="website"
-                    className="block mb-2 text-sm font-medium text-gray-900"
-                  >
-                    Website
-                  </label>
-                  <input
-                    type="url"
-                    name="website"
-                    id="website"
-                    defaultValue={currentCompany?.website || ""}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="facebook"
-                    className="block mb-2 text-sm font-medium text-gray-900"
-                  >
-                    Facebook
-                  </label>
-                  <input
-                    type="url"
-                    name="facebook"
-                    id="facebook"
-                    defaultValue={currentCompany?.facebook || ""}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="instagram"
-                    className="block mb-2 text-sm font-medium text-gray-900"
-                  >
-                    Instagram
-                  </label>
-                  <input
-                    type="url"
-                    name="instagram"
-                    id="instagram"
-                    defaultValue={currentCompany?.instagram || ""}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="linkedin"
-                    className="block mb-2 text-sm font-medium text-gray-900"
-                  >
-                    LinkedIn
-                  </label>
-                  <input
-                    type="url"
-                    name="linkedin"
-                    id="linkedin"
-                    defaultValue={currentCompany?.linkedin || ""}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="twitter"
-                    className="block mb-2 text-sm font-medium text-gray-900"
-                  >
-                    Twitter
-                  </label>
-                  <input
-                    type="url"
-                    name="twitter"
-                    id="twitter"
-                    defaultValue={currentCompany?.twitter || ""}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
-                  />
-                </div>
+                {[
+                  "website",
+                  "facebook",
+                  "instagram",
+                  "linkedin",
+                  "twitter",
+                ].map((field) => (
+                  <div key={field}>
+                    <label
+                      htmlFor={field}
+                      className="block mb-2 text-sm font-medium text-gray-900"
+                    >
+                      {field.charAt(0).toUpperCase() + field.slice(1)}
+                    </label>
+                    <input
+                      type="url"
+                      name={field}
+                      id={field}
+                      defaultValue={currentCompany?.[field] || ""}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+                    />
+                  </div>
+                ))}
               </div>
 
-              {/* Logo Upload */}
-              <div>
-                <label
-                  htmlFor="logo"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Company Logo
-                </label>
-                <input
-                  type="file"
-                  name="logo"
-                  id="logo"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="block w-full text-sm text-gray-500
-              file:mr-4 file:py-2 file:px-4
-              file:rounded-md file:border-0
-              file:text-sm file:font-semibold
-              file:bg-indigo-50 file:text-indigo-700
-              hover:file:bg-indigo-100"
-                />
-                {currentCompany?.logo && (
-                  <p className="mt-1 text-xs text-gray-500">
-                    Current logo: {currentCompany.logo}
-                  </p>
-                )}
+              {/* Logo, Banner, Images Upload */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label
+                    htmlFor="logo"
+                    className="block mb-2 text-sm font-medium text-gray-900"
+                  >
+                    Logo
+                  </label>
+                  <input
+                    type="file"
+                    name="logo"
+                    id="logo"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="banner"
+                    className="block mb-2 text-sm font-medium text-gray-900"
+                  >
+                    Banner
+                  </label>
+                  <input
+                    type="file"
+                    name="banner"
+                    id="banner"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="images"
+                    className="block mb-2 text-sm font-medium text-gray-900"
+                  >
+                    Additional Images
+                  </label>
+                  <input
+                    type="file"
+                    name="images"
+                    id="images"
+                    multiple
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
+                </div>
               </div>
 
               {/* Description */}
@@ -628,6 +598,8 @@ const AdminCompanies = () => {
                 ></textarea>
               </div>
             </div>
+
+            {/* Form Buttons */}
             <div className="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b">
               <Button variant="primary" type="submit" disabled={isLoading}>
                 {isLoading

@@ -33,12 +33,13 @@ app.use((req, _res, next) => {
 });
 
 // CORS
-app.use(
-  cors({
-    origin: process.env.CLIENT_ORIGIN?.split(",") || "*",
-    credentials: false,
-  })
-);
+// app.use(
+//   cors({
+//     origin: process.env.CLIENT_ORIGIN?.split(",") || "http://localhost:3000",
+//     credentials: true,
+//   })
+// );
+app.use(cors({ origin: "*", credentials: true }));
 
 // Logging
 app.use(morgan("dev"));
@@ -53,7 +54,7 @@ app.use("/api/", apiLimiter);
 
 // Static uploads
 const uploadsDir = process.env.UPLOAD_DIR || "uploads";
-app.use("/uploads", express.static(path.join(__dirname, "..", uploadsDir)));
+app.use("/uploads", express.static(path.resolve(uploadsDir)));
 
 // Routes
 app.use("/api/users", authRoutes);
