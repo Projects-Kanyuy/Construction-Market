@@ -24,6 +24,8 @@ interface CompanyData {
   email?: string;
   description?: string;
   logo?: string;
+  banner?: string;
+  images?: string[];
   categories?: { id: number; name: string }[];
   projects?: any[];
   website?: string;
@@ -34,6 +36,9 @@ interface CompanyData {
   createdAt: string;
   updatedAt: string;
 }
+
+const CLOUDINARY_BASE =
+  "https://res.cloudinary.com/YOUR_CLOUD_NAME/image/upload/";
 
 const AdminCompanies = () => {
   const { user } = useContext(AuthContext);
@@ -59,8 +64,6 @@ const AdminCompanies = () => {
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [imagesFiles, setImagesFiles] = useState<File[]>([]);
 
-  // modal image
-  // For displaying previews of existing or newly uploaded images
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
   const [imagesPreview, setImagesPreview] = useState<string[]>([]);
@@ -73,8 +76,9 @@ const AdminCompanies = () => {
   const loadCompanies = async () => {
     setLoading(true);
     try {
-      const response = await fetchCompanies(4.9559, 9.8598);
-      setCompanies(response.data || []);
+      const response = await fetchCompanies();
+      setCompanies(response.data.items || []); // <-- Access items within data
+      console.log("Companies loaded:", response.data.items);
     } catch (error) {
       console.error("Error loading companies:", error);
     } finally {
@@ -98,6 +102,9 @@ const AdminCompanies = () => {
     setLogoFile(null);
     setBannerFile(null);
     setImagesFiles([]);
+    setLogoPreview(null);
+    setBannerPreview(null);
+    setImagesPreview([]);
   };
 
   const handleEditCompany = (company: CompanyData) => {
@@ -107,6 +114,11 @@ const AdminCompanies = () => {
     setLogoFile(null);
     setBannerFile(null);
     setImagesFiles([]);
+    setLogoPreview(company.logo ? getImageUrl(company.logo) : null);
+    setBannerPreview(company.banner ? getImageUrl(company.banner) : null);
+    setImagesPreview(
+      company.images?.map(getImageUrl).filter(Boolean) as string[]
+    );
   };
 
   const handleDeleteCompany = (id: number) => {
@@ -119,6 +131,7 @@ const AdminCompanies = () => {
     setNewStatus(company.status);
     setIsStatusModalOpen(true);
   };
+
   const removeLogo = () => {
     setLogoFile(null);
     setLogoPreview(null);
@@ -165,17 +178,16 @@ const AdminCompanies = () => {
     setIsLoading(true);
     try {
       await updateCompanyStatus(currentCompany.id, newStatus);
-      setCompanies((prev) => {
-        if (!Array.isArray(prev)) return [];
-        return prev.map((c) =>
+      setCompanies((prev) =>
+        prev.map((c) =>
           c.id === currentCompany.id ? { ...c, status: newStatus } : c
-        );
-      });
+        )
+      );
       setIsStatusModalOpen(false);
       toast.success("Status updated successfully");
     } catch (error) {
       toast.error("Error updating status");
-      console.error("Error updating status:", error);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -186,15 +198,12 @@ const AdminCompanies = () => {
     setIsLoading(true);
     try {
       await deleteCompany(companyToDelete);
-      setCompanies((prev) => {
-        if (!Array.isArray(prev)) return [];
-        return prev.filter((c) => c.id !== companyToDelete);
-      });
+      setCompanies((prev) => prev.filter((c) => c.id !== companyToDelete));
       setIsDeleteModalOpen(false);
       toast.success("Company deleted successfully");
     } catch (error) {
       toast.error("Error deleting company");
-      console.error("Error deleting company:", error);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -211,6 +220,11 @@ const AdminCompanies = () => {
       "phone",
       "location",
       "description",
+      "website",
+      "facebook",
+      "instagram",
+      "linkedin",
+      "twitter",
     ];
     fields.forEach((field) => {
       const value =
@@ -231,27 +245,28 @@ const AdminCompanies = () => {
     try {
       if (currentCompany) {
         const response = await updateCompany(currentCompany.id, formData);
-        setCompanies((prev) => {
-          if (!Array.isArray(prev)) return [response.data];
-          return prev.map((c) =>
-            c.id === currentCompany.id ? response.data : c
-          );
-        });
+        setCompanies((prev) =>
+          prev.map((c) => (c.id === currentCompany.id ? response.data : c))
+        );
         toast.success("Company updated successfully");
       } else {
         const response = await createCompany(formData);
-        setCompanies((prev) =>
-          Array.isArray(prev) ? [response.data, ...prev] : [response.data]
-        );
+        setCompanies((prev) => [
+          response.data,
+          ...(Array.isArray(prev) ? prev : []),
+        ]);
         toast.success("Company created successfully");
       }
       setIsModalOpen(false);
       setLogoFile(null);
       setBannerFile(null);
       setImagesFiles([]);
+      setLogoPreview(null);
+      setBannerPreview(null);
+      setImagesPreview([]);
     } catch (error) {
       toast.error("Error saving company");
-      console.error("Error saving company:", error);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -259,7 +274,8 @@ const AdminCompanies = () => {
 
   const getImageUrl = (path?: string) => {
     if (!path) return null;
-    return `https://api.cpromart.site/${path.replace(/^\/?/, "")}`;
+    if (path.startsWith("http")) return path;
+    return `${CLOUDINARY_BASE}${path}`;
   };
 
   return (
@@ -281,8 +297,8 @@ const AdminCompanies = () => {
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
-          <table className="min-w-full divide-y divide-gray-200">
+        <div className="overflow-hidden overflow-x-auto rounded-lg border border-gray-200 bg-white">
+          <table className="min-w-full divide-y divide-gray-200 overflow-x-auto overflow-hidden">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
