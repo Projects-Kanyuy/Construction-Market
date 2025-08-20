@@ -100,7 +100,6 @@ const CategoryPage: React.FC = () => {
         <title>{t("view_all_companies")}</title>
         <meta name="description" content={t("dicover_top_rated")} />
       </Helmet>
-
       {/* Search Section */}
       <section className="bg-white py-8 shadow-md">
         <div className="container mx-auto px-4">
