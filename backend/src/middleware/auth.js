@@ -33,8 +33,14 @@ export const protect = async (req, res, next) => {
 
 // Admin-only middleware
 export const adminOnly = (req, res, next) => {
-  if (!req.user || req.user.role !== "admin") {
+  if (!req.user) {
     return res.status(403).json({ message: "Access denied. Admins only." });
   }
+
+  const role = req.user.role.toUpperCase(); // normalize
+  if (role !== "ADMIN" && role !== "SUPER_ADMIN") {
+    return res.status(403).json({ message: "Access denied. Admins only." });
+  }
+
   next();
 };

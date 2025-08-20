@@ -15,7 +15,7 @@ import {
 } from "../../api/api";
 
 interface CompanyData {
-  id: number;
+  _id: number;
   name: string;
   username: string;
   status: "PENDING" | "APPROVED" | "REJECTED";
@@ -26,7 +26,7 @@ interface CompanyData {
   logo?: string;
   banner?: string;
   images?: string[];
-  categories?: { id: number; name: string }[];
+  categories?: { _id: number; name: string }[];
   projects?: any[];
   website?: string;
   facebook?: string;
@@ -110,7 +110,7 @@ const AdminCompanies = () => {
   const handleEditCompany = (company: CompanyData) => {
     setCurrentCompany(company);
     setIsModalOpen(true);
-    setSelectedCategories(company.categories?.map((c) => c.id) || []);
+    setSelectedCategories(company.categories?.map((c) => c._id) || []);
     setLogoFile(null);
     setBannerFile(null);
     setImagesFiles([]);
@@ -177,10 +177,10 @@ const AdminCompanies = () => {
     if (!currentCompany) return;
     setIsLoading(true);
     try {
-      await updateCompanyStatus(currentCompany.id, newStatus);
+      await updateCompanyStatus(currentCompany._id, newStatus);
       setCompanies((prev) =>
         prev.map((c) =>
-          c.id === currentCompany.id ? { ...c, status: newStatus } : c
+          c._id === currentCompany._id ? { ...c, status: newStatus } : c
         )
       );
       setIsStatusModalOpen(false);
@@ -198,7 +198,7 @@ const AdminCompanies = () => {
     setIsLoading(true);
     try {
       await deleteCompany(companyToDelete);
-      setCompanies((prev) => prev.filter((c) => c.id !== companyToDelete));
+      setCompanies((prev) => prev.filter((c) => c._id !== companyToDelete));
       setIsDeleteModalOpen(false);
       toast.success("Company deleted successfully");
     } catch (error) {
@@ -244,9 +244,9 @@ const AdminCompanies = () => {
     setIsLoading(true);
     try {
       if (currentCompany) {
-        const response = await updateCompany(currentCompany.id, formData);
+        const response = await updateCompany(currentCompany._id, formData);
         setCompanies((prev) =>
-          prev.map((c) => (c.id === currentCompany.id ? response.data : c))
+          prev.map((c) => (c._id === currentCompany._id ? response.data : c))
         );
         toast.success("Company updated successfully");
       } else {
@@ -324,7 +324,7 @@ const AdminCompanies = () => {
             <tbody className="divide-y divide-gray-200 bg-white">
               {Array.isArray(companies) && companies.length > 0 ? (
                 companies.map((company) => (
-                  <tr key={company.id}>
+                  <tr key={company._id}>
                     <td className="whitespace-nowrap px-6 py-4">
                       <div className="flex items-center">
                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
@@ -360,7 +360,7 @@ const AdminCompanies = () => {
                       <div className="space-y-1">
                         {company.categories?.map((category) => (
                           <div
-                            key={category.id}
+                            key={category._id}
                             className="text-sm text-gray-900 bg-gray-50 px-3 py-1 rounded-md"
                           >
                             {category.name}
@@ -409,7 +409,7 @@ const AdminCompanies = () => {
                       </button>
                       {user.role === "SUPER_ADMIN" && (
                         <button
-                          onClick={() => handleDeleteCompany(company.id)}
+                          onClick={() => handleDeleteCompany(company._id)}
                           className="text-red-600 hover:text-red-900"
                         >
                           <Trash2 size={16} />
@@ -521,12 +521,12 @@ const AdminCompanies = () => {
                     selectedCategories.length > 0
                       ? selectedCategories.map((id) => id.toString())
                       : currentCompany?.categories?.map((c) =>
-                          c.id.toString()
+                          c._id.toString()
                         ) || []
                   }
                 >
                   {categories.map((category: any) => (
-                    <option key={category.id} value={category.id}>
+                    <option key={category._id} value={category._id}>
                       {category.name}
                     </option>
                   ))}
@@ -831,7 +831,3 @@ const AdminCompanies = () => {
 };
 
 export default AdminCompanies;
-
-
-
-

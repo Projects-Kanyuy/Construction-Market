@@ -52,17 +52,24 @@ export const getCompany = async (req, res) => {
 };
 
 // Create company
+// src/controllers/companyController.js
 export const createCompany = async (req, res) => {
   try {
     const body = req.body;
 
-    // Cloudinary files already have .path with full URL
     if (req.files?.logo) body.logoUrl = req.files.logo[0].path;
     if (req.files?.banner) body.bannerUrl = req.files.banner[0].path;
     if (req.files?.images) body.images = req.files.images.map((f) => f.path);
 
+    // Map socials and location explicitly if not automatically handled
+    body.location = req.body.location || "";
+    body.facebook = req.body.facebook || "";
+    body.twitter = req.body.twitter || "";
+    body.instagram = req.body.instagram || "";
+    body.linkedin = req.body.linkedin || "";
+
     const item = await Company.create(body);
-    res.status(StatusCodes.CREATED).json(item);
+    res.status(201).json(item);
   } catch (error) {
     console.error("Error creating company:", error);
     res.status(500).json({ message: "Failed to create company" });
@@ -70,13 +77,22 @@ export const createCompany = async (req, res) => {
 };
 
 // Update company
+// src/controllers/companyController.js
 export const updateCompany = async (req, res) => {
   try {
     const body = req.body;
 
+    // Handle uploaded files
     if (req.files?.logo) body.logoUrl = req.files.logo[0].path;
     if (req.files?.banner) body.bannerUrl = req.files.banner[0].path;
     if (req.files?.images) body.images = req.files.images.map((f) => f.path);
+
+    // Map socials and location explicitly
+    body.location = req.body.location || "";
+    body.facebook = req.body.facebook || "";
+    body.twitter = req.body.twitter || "";
+    body.instagram = req.body.instagram || "";
+    body.linkedin = req.body.linkedin || "";
 
     const item = await Company.findByIdAndUpdate(req.params.id, body, {
       new: true,

@@ -19,7 +19,12 @@ const companySchema = new mongoose.Schema(
     verified: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
     tags: [{ type: String, index: true }],
-},
+    facebook: { type: String },
+    twitter: { type: String },
+    instagram: { type: String },
+    linkedin: { type: String },
+    location: { type: String },
+  },
   { timestamps: true }
 );
 
