@@ -13,13 +13,13 @@ import activityLogRoutes from "./routes/activityLogRoutes.js";
 import healthRoutes from "./routes/healthRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
 import categoriesRouter from "./routes/categoriesRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Security
+// --- Security ---
 app.use(helmet());
 app.use((req, _res, next) => {
   if (req.body) {
@@ -32,38 +32,37 @@ app.use((req, _res, next) => {
   next();
 });
 
-// CORS
-// app.use(
-//   cors({
-//     origin: process.env.CLIENT_ORIGIN?.split(",") || "http://localhost:3000",
-//     credentials: true,
-//   })
-// );
+// --- CORS ---
 app.use(cors({ origin: "*", credentials: true }));
 
-// Logging
+// --- Logging ---
 app.use(morgan("dev"));
 
-// Body parsers
+// --- Body parsers ---
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// Rate limit (basic)
+// --- Rate limit ---
 const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
 app.use("/api/", apiLimiter);
 
-// Routes
+// --- Routes ---
+// Auth (login + getAllUsers)
 app.use("/api/users", authRoutes);
 
+// User CRUD (register, update, delete)
+app.use("/api/users", userRoutes);
+
+// Other routes
 app.use("/api/companies", companyRoutes);
 app.use("/api/activity_logs", activityLogRoutes);
 app.use("/api/health", healthRoutes);
 app.use("/api/categories", categoriesRouter);
 
-// Health root
+// --- Health root ---
 app.get("/", (_req, res) => res.json({ ok: true, service: "cipromart-api" }));
 
-// Error handlers
+// --- Error handlers ---
 app.use(notFound);
 app.use(errorHandler);
 

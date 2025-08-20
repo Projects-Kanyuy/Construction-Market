@@ -4,10 +4,10 @@ import { protect, adminOnly } from "../middleware/auth.js";
 
 const router = Router();
 
-// Existing login route
+// --- Login route ---
 router.post("/login", login);
 
-// Admin-only GET /api/users
+// --- Admin-only GET /api/users ---
 router.get("/", protect, adminOnly, getAllUsers);
 
 export default router;
