@@ -40,17 +40,17 @@ const HeroSection: React.FC = () => {
             )}
           </div>
 
-          <div className="relative hidden overflow-hidden rounded-xl shadow-2xl lg:block">
+          {/* <div className="relative hidden overflow-hidden rounded-xl shadow-2xl lg:block">
             <img
               src={monument}
               alt="Cameroon pride"
               className="h-full w-full object-cover object-center"
             />
-          </div>
+          </div> */}
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 translate-y-1">
+      {/* <div className="absolute bottom-0 left-0 right-0 translate-y-1">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 200">
           <path
             fill="#F9FAFB"
@@ -58,7 +58,7 @@ const HeroSection: React.FC = () => {
             d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,149.3C960,160,1056,160,1152,149.3C1248,139,1344,117,1392,106.7L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
           ></path>
         </svg>
-      </div>
+      </div> */}
     </section>
   );
 };
