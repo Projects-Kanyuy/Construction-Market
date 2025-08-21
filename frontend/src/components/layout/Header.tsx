@@ -45,7 +45,11 @@ const Header: React.FC = () => {
     <header className={headerClasses}>
       <div className="container mx-auto flex items-center justify-between px-4">
         <Link to="/" className="flex items-center">
-          <Building2 className={`mr-2 h-7 w-7 text-[#FF9D42]`} />
+          <img
+            src="/src/assets/cipromart-logo.png"
+            alt="CProMart Logo"
+            className="h-12 w-auto mr-1"
+          />
           <span className={`text-xl font-bold ${textColor}`}>CProMart</span>
         </Link>
 
