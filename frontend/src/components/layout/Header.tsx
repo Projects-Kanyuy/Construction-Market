@@ -45,7 +45,11 @@ const Header: React.FC = () => {
     <header className={headerClasses}>
       <div className="container mx-auto flex items-center justify-between px-4">
         <Link to="/" className="flex items-center">
-          <Building2 className={`mr-2 h-7 w-7 text-[#FF9D42]`} />
+          <img
+            src="/src/assets/cipromart-logo.png"
+            alt="CProMart Logo"
+            className="h-12 w-auto mr-1"
+          />
           <span className={`text-xl font-bold ${textColor}`}>CProMart</span>
         </Link>
 
@@ -76,7 +80,7 @@ const Header: React.FC = () => {
                 {t("contact")}
               </Link>
             </li>
-            <li>
+            {/* <li>
               {isAuthenticated ? (
                 <div>
                   {user.role == "USER" ? (
@@ -104,7 +108,7 @@ const Header: React.FC = () => {
                   Sign In
                 </Link>
               )}
-            </li>
+            </li> */}
           </ul>
         </nav>
 
@@ -134,7 +138,7 @@ const Header: React.FC = () => {
                   {t("home")}
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   to="/categories"
                   className="block text-lg font-medium text-gray-900"
@@ -142,7 +146,7 @@ const Header: React.FC = () => {
                 >
                   {t("cateories")}
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link
                   to="/about"
@@ -162,7 +166,7 @@ const Header: React.FC = () => {
                 </Link>
               </li>
 
-              <li>
+              {/* <li>
                 {isAuthenticated ? (
                   <div>
                     {user.role == "USER" ? (
@@ -194,7 +198,7 @@ const Header: React.FC = () => {
                     Sign In
                   </Link>
                 )}
-              </li>
+              </li> */}
             </ul>
 
             <div className="mt-6">

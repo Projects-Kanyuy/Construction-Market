@@ -30,15 +30,21 @@ const Footer: React.FC = () => {
   //     console.log("Error fetching categories:", error);
   //   }
   // };
+
+  const textColor = "text-[#fff]";
   return (
     <footer className="bg-[#1A2531] text-white">
       <div id="about" className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Logo and About */}
           <div>
-            <Link to="/" className="mb-4 flex items-center">
-              <Building2 className="mr-2 h-8 w-8 text-[#FF9D42]" />
-              <span className="text-xl font-bold">CProMart</span>
+            <Link to="/" className="flex items-center">
+              <img
+                src="/src/assets/cipromart-logo.png"
+                alt="CProMart Logo"
+                className="h-12 w-auto mr-1"
+              />
+              <span className={`text-xl font-bold ${textColor}`}>CProMart</span>
             </Link>
             <p className="mb-4 text-gray-300">{t("connecting_with_top")}</p>
             <div className="flex space-x-4">
