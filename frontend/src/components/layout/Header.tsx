@@ -58,7 +58,7 @@ const Header: React.FC = () => {
             <li>
               <Link
                 to="/"
-                className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`}
+                className={`${textColor} font-medium transition-colors hover:text-[#dcad13]`}
               >
                 {t("home")}
               </Link>
@@ -67,7 +67,7 @@ const Header: React.FC = () => {
             <li>
               <Link
                 to="/about"
-                className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`}
+                className={`${textColor} font-medium transition-colors hover:text-[#dcad13]`}
               >
                 {t("about")}
               </Link>
@@ -75,7 +75,7 @@ const Header: React.FC = () => {
             <li>
               <Link
                 to="/contact"
-                className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`}
+                className={`${textColor} font-medium transition-colors hover:text-[#dcad13]`}
               >
                 {t("contact")}
               </Link>
@@ -85,7 +85,7 @@ const Header: React.FC = () => {
                 <div>
                   {user.role == "USER" ? (
                     <button
-                      className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`}
+                      className={`${textColor} font-medium transition-colors hover:text-[#dcad13]`}
                       onClick={logout}
                     >
                       Logout
@@ -93,7 +93,7 @@ const Header: React.FC = () => {
                   ) : (
                     <Link
                       to={user.role == "ADMIN" ? "/admin" : "/dashboard"}
-                      className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`}
+                      className={`${textColor} font-medium transition-colors hover:text-[#dcad13]`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Dashboard
@@ -103,7 +103,7 @@ const Header: React.FC = () => {
               ) : (
                 <Link
                   to="/signin"
-                  className={`${textColor} font-medium transition-colors hover:text-[#FF9D42]`}
+                  className={`${textColor} font-medium transition-colors hover:text-[#dcad13]`}
                 >
                   Sign In
                 </Link>

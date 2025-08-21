@@ -50,25 +50,25 @@ const Footer: React.FC = () => {
             <div className="flex space-x-4">
               <a
                 href="#"
-                className="text-gray-300 transition-colors hover:text-[#FF9D42]"
+                className="text-gray-300 transition-colors hover:text-[#dcad13]"
               >
                 <Facebook size={20} />
               </a>
               <a
                 href="#"
-                className="text-gray-300 transition-colors hover:text-[#FF9D42]"
+                className="text-gray-300 transition-colors hover:text-[#dcad13]"
               >
                 <Twitter size={20} />
               </a>
               <a
                 href="#"
-                className="text-gray-300 transition-colors hover:text-[#FF9D42]"
+                className="text-gray-300 transition-colors hover:text-[#dcad13]"
               >
                 <Instagram size={20} />
               </a>
               <a
                 href="#"
-                className="text-gray-300 transition-colors hover:text-[#FF9D42]"
+                className="text-gray-300 transition-colors hover:text-[#dcad13]"
               >
                 <Linkedin size={20} />
               </a>
@@ -81,11 +81,11 @@ const Footer: React.FC = () => {
             <ul className="space-y-2">
               {categories.map((category) => (
                 <li key={category.id}>
-                  <Link to={`/category/${category.name}`} className="text-gray-300 transition-colors hover:text-[#FF9D42]" state={{ category }}>{category.name}</Link>
+                  <Link to={`/category/${category.name}`} className="text-gray-300 transition-colors hover:text-[#dcad13]" state={{ category }}>{category.name}</Link>
                 </li>
               ))}
               <li>
-                  <Link to={'/categories'} className="text-gray-300 transition-colors hover:text-[#FF9D42]">See more Categories</Link>
+                  <Link to={'/categories'} className="text-gray-300 transition-colors hover:text-[#dcad13]">See more Categories</Link>
               </li>
             </ul>
           </div> */}
@@ -97,7 +97,7 @@ const Footer: React.FC = () => {
               <li>
                 <Link
                   to="/"
-                  className="text-gray-300 transition-colors hover:text-[#FF9D42]"
+                  className="text-gray-300 transition-colors hover:text-[#dcad13]"
                 >
                   {t("home")}
                 </Link>
@@ -105,7 +105,7 @@ const Footer: React.FC = () => {
               <li>
                 <Link
                   to="/about"
-                  className="text-gray-300 transition-colors hover:text-[#FF9D42]"
+                  className="text-gray-300 transition-colors hover:text-[#dcad13]"
                 >
                   {t("about_us")}
                 </Link>
@@ -113,7 +113,7 @@ const Footer: React.FC = () => {
               <li>
                 <Link
                   to="/contact"
-                  className="text-gray-300 transition-colors hover:text-[#FF9D42]"
+                  className="text-gray-300 transition-colors hover:text-[#dcad13]"
                 >
                   {t("contact")}
                 </Link>
@@ -128,11 +128,11 @@ const Footer: React.FC = () => {
             <h3 className="mb-4 text-lg font-semibold">{t("contact_us")}</h3>
             <ul className="space-y-3">
               <li className="flex items-center">
-                <Mail className="mr-2 h-5 w-5 text-[#FF9D42]" />
+                <Mail className="mr-2 h-5 w-5 text-[#dcad13]" />
                 <span className="text-gray-300">cpromart1@gmail.com</span>
               </li>
               <li className="flex items-center">
-                <Phone className="mr-2 h-5 w-5 text-[#FF9D42]" />
+                <Phone className="mr-2 h-5 w-5 text-[#dcad13]" />
                 <span className="text-gray-300">+237 674 77 25 69</span>
               </li>
             </ul>

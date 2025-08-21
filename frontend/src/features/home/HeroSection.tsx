@@ -15,12 +15,12 @@ const HeroSection: React.FC = () => {
         <div className="text-center max-w-4xl mx-auto">
           {/* Header Content */}
           <div className="mb-12">
-            <div className="mb-4 inline-block rounded-full bg-[#FF9D42]/20 px-4 py-1.5 text-sm font-semibold text-[#FF9D42]">
+            <div className="mb-4 inline-block rounded-full bg-[#dcad13]/20 px-4 py-1.5 text-sm font-semibold text-[#dcad13]">
               {t("find_best_construction")}
             </div>
 
             <h1 className="mb-6 text-2xl font-bold leading-tight text-white md:text-2xl lg:text-3xl">
-              {t("build")} <span className="text-[#FF9D42]">{t("dream")}</span>{" "}
+              {t("build")} <span className="text-[#dcad13]">{t("dream")}</span>{" "}
               {t("rigth_partners")}
             </h1>
 
