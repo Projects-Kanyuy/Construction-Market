@@ -1,5 +1,5 @@
 import React from "react";
-import HeroSection from "./HeroSection";
+// import HeroSection from "./HeroSection";
 // import CategorySection from "./CategorySection";
 import FeaturedCompanies from "./FeaturedCompanies";
 import Layout from "../../components/layout/Layout";
@@ -17,12 +17,8 @@ const HomePage: React.FC = () => {
           content="Find the best construction companies, services, and tools near you."
         />
       </Helmet>
-      <div id="home">
-        <HeroSection />
-      </div>
-      <div id="categories">
-        {/* <CategorySection /> */}
-      </div>
+      <div id="home">{/* <HeroSection /> */}</div>
+      {/* <div id="categories"><CategorySection /></div> */}
       <FeaturedCompanies />
     </Layout>
   );
