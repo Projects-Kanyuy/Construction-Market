@@ -27,7 +27,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ title, links }) => {
       <aside className="fixed inset-y-0 left-0 w-64 bg-[#1A2531] text-white">
         <div className="flex h-16 items-center px-6">
           <Link to="/" className="flex items-center">
-            <Building2 className="mr-2 h-6 w-6 text-[#FF9D42]" />
+            <Building2 className="mr-2 h-6 w-6 text-[#dcad13]" />
             <span className="text-lg font-bold">Construction Market</span>
           </Link>
         </div>

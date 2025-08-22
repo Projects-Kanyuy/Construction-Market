@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import SearchBar from "../../components/common/SearchBar";
 import Button from "../../components/common/Button";
 import { AuthContext } from "../../context/AuthContext";
+import bgImage from "../../assets/bg-min.jpg";
 
 const CACHE_KEY = "featured_companies";
 const CACHE_TIMESTAMP_KEY = "featured_companies_timestamp";
@@ -173,7 +174,7 @@ const FeaturedCompanies: React.FC = React.memo(() => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-40 sm:w-48 bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF9D42]"
+        className="flex items-center justify-between w-40 sm:w-48 bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#dcad13]"
       >
         <div className="flex items-center">
           <Icon className="h-3 w-3 sm:h-4 sm:w-4 text-gray-500 mr-1 sm:mr-2" />
@@ -219,19 +220,19 @@ const FeaturedCompanies: React.FC = React.memo(() => {
       <section
         className="relative overflow-hidden py-12 md:py-16 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `linear-gradient(rgba(26, 37, 49, 0.92), rgba(26, 37, 49, 0.88)), url('/src/assets/bg-min.jpg')`,
+          backgroundImage: `linear-gradient(rgba(26, 37, 49, 0.92), rgba(26, 37, 49, 0.88)), url(${bgImage})`,
         }}
       >
         <div className="container relative mx-auto px-4 z-10">
           <div className="text-center max-w-4xl mx-auto">
             {/* Header Content */}
             <div className="mb-6 sm:mb-8">
-              <div className="mb-2 sm:mb-3 inline-block rounded-full bg-[#FF9D42]/20 px-3 py-1 text-xs sm:text-sm font-semibold text-[#FF9D42]">
+              <div className="mb-2 sm:mb-3 inline-block rounded-full bg-[#dcad13]/20 px-3 py-1 text-xs sm:text-sm font-semibold text-[#dcad13]">
                 {t("find_best_construction")}
               </div>
               <h1 className="mb-3 sm:mb-4 text-xl sm:text-2xl md:text-3xl font-bold leading-tight text-white">
                 {t("build")}{" "}
-                <span className="text-[#FF9D42]">{t("dream")}</span>{" "}
+                <span className="text-[#dcad13]">{t("dream")}</span>{" "}
                 {t("rigth_partners")}
               </h1>
               <p className="mb-1 text-sm sm:text-base text-gray-300 hidden sm:block">

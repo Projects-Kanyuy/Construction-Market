@@ -323,7 +323,7 @@
                       href={whatsappLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex w-full items-center justify-center rounded-lg bg-[#FF9D42] py-3 font-medium text-white transition-all duration-200 hover:bg-[#F08A2C] active:bg-[#D6791F]"
+                      className="flex w-full items-center justify-center rounded-lg bg-[#dcad13] py-3 font-medium text-white transition-all duration-200 hover:bg-[#F08A2C] active:bg-[#D6791F]"
                     >
                       <Phone className="mr-2 h-5 w-5" />
                       {t("contact_via_whatsapp")}
