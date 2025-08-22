@@ -12,6 +12,7 @@ import {
 // import { Category } from "../../types";
 // import { fetchCategories } from "../../api/api";
 import { useTranslation } from "react-i18next";
+import logo from "../../assets/cipromart-logo.png";
 
 const Footer: React.FC = () => {
   const { t } = useTranslation();
@@ -39,11 +40,7 @@ const Footer: React.FC = () => {
           {/* Logo and About */}
           <div>
             <Link to="/" className="flex items-center">
-              <img
-                src="/src/assets/cipromart-logo.png"
-                alt="CProMart Logo"
-                className="h-12 w-auto mr-1"
-              />
+              <img src={logo} alt="CProMart Logo" className="h-8 w-auto mr-1" />
               <span className={`text-xl font-bold ${textColor}`}>CProMart</span>
             </Link>
             <p className="mb-4 text-gray-300">{t("connecting_with_top")}</p>

@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import SearchBar from "../../components/common/SearchBar";
 import Button from "../../components/common/Button";
 import { AuthContext } from "../../context/AuthContext";
+import bgImage from "../../assets/bg-min.jpg";
 
 const CACHE_KEY = "featured_companies";
 const CACHE_TIMESTAMP_KEY = "featured_companies_timestamp";
@@ -219,7 +220,7 @@ const FeaturedCompanies: React.FC = React.memo(() => {
       <section
         className="relative overflow-hidden py-12 md:py-16 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `linear-gradient(rgba(26, 37, 49, 0.92), rgba(26, 37, 49, 0.88)), url('/src/assets/bg-min.jpg')`,
+          backgroundImage: `linear-gradient(rgba(26, 37, 49, 0.92), rgba(26, 37, 49, 0.88)), url(${bgImage})`,
         }}
       >
         <div className="container relative mx-auto px-4 z-10">

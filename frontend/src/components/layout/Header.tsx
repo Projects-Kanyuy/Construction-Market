@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Building2, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
-
+import logo from "../../assets/cipromart-logo.png";
 import { AuthContext } from "../../context/AuthContext";
 
 const Header: React.FC = () => {
@@ -45,11 +45,7 @@ const Header: React.FC = () => {
     <header className={headerClasses}>
       <div className="container mx-auto flex items-center justify-between px-4">
         <Link to="/" className="flex items-center">
-          <img
-            src="/src/assets/cipromart-logo.png"
-            alt="CProMart Logo"
-            className="h-12 w-auto mr-1"
-          />
+          <img src={logo} alt="CProMart Logo" className="h-8 w-auto mr-1" />
           <span className={`text-xl font-bold ${textColor}`}>CProMart</span>
         </Link>
 
