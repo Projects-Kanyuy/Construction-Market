@@ -11,9 +11,11 @@ import authRoutes from "./routes/authRoutes.js";
 import companyRoutes from "./routes/companyRoutes.js";
 import activityLogRoutes from "./routes/activityLogRoutes.js";
 import healthRoutes from "./routes/healthRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
 import categoriesRouter from "./routes/categoriesRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import swaggerSetup from "./config/swagger.js";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -58,9 +60,13 @@ app.use("/api/companies", companyRoutes);
 app.use("/api/activity_logs", activityLogRoutes);
 app.use("/api/health", healthRoutes);
 app.use("/api/categories", categoriesRouter);
+app.use("/api/payments", paymentRoutes);
+
+// --- Swagger Documentation ---
+swaggerSetup(app);
 
 // --- Health root ---
-app.get("/", (_req, res) => res.json({ ok: true, service: "cipromart-api" }));
+app.get("/", (_req, res) => res.json({ ok: true, service: "construction-market-api" }));
 
 // --- Error handlers ---
 app.use(notFound);
