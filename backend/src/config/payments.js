@@ -1,6 +1,7 @@
 import PaymentService from '../services/paymentService.js';
 import { StripeProvider } from '../services/providers/stripeProvider.js';
 import { FlutterwaveProvider } from '../services/providers/flutterwaveProvider.js';
+import { SwyChrProvider } from '../services/providers/swychrProvider.js';
 
 // Initialize payment service with providers
 const initializePaymentService = () => {
@@ -25,6 +26,17 @@ const initializePaymentService = () => {
     });
     paymentService.registerProvider('flutterwave', flutterwaveProvider);
     console.log('✅ Flutterwave payment provider registered');
+  }
+
+  // Register SwyChr provider if configured
+  if (process.env.SWYCHR_EMAIL && process.env.SWYCHR_PASSWORD) {
+    const swychrProvider = new SwyChrProvider({
+      baseURL: process.env.SWYCHR_API_BASE_URL,
+      email: process.env.SWYCHR_EMAIL,
+      password: process.env.SWYCHR_PASSWORD
+    });
+    paymentService.registerProvider('swychr', swychrProvider);
+    console.log('✅ SwyChr payment provider registered');
   }
 
   // Add more providers as needed (Paystack, PayPal, etc.)

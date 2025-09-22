@@ -50,7 +50,12 @@ export const createPayment = async (req, res) => {
     res.status(StatusCodes.CREATED).json({
       success: true,
       message: 'Payment created successfully',
-      data: result
+      data: {
+        ...result,
+        // Include payment URL for frontend redirection (for providers like SwyChr)
+        paymentUrl: result.providerData?.paymentUrl,
+        redirectUrl: result.providerData?.paymentUrl
+      }
     });
   } catch (error) {
     console.error('Error creating payment:', error);
@@ -206,8 +211,8 @@ export const getPaymentServices = async (req, res) => {
       message: 'Payment services retrieved successfully',
       data: {
         services,
-        availableProviders: ['stripe', 'flutterwave', 'paystack'],
-        supportedCurrencies: ['USD', 'XAF', 'NGN']
+        availableProviders: ['swychr', 'stripe', 'flutterwave', 'paystack'],
+        supportedCurrencies: ['USD', 'EUR', 'GBP', 'XAF', 'NGN', 'GHS', 'KES', 'UGX', 'TZS', 'ZAR']
       }
     });
   } catch (error) {

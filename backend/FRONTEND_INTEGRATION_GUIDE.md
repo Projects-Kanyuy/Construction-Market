@@ -523,12 +523,13 @@ function CompanyList({ companies, showDistance, userLocation }) {
 
 ## Payment System Integration
 
-### 1. Payment Services Display
+### 1. Currency-Aware Payment Services Display
 
 ```javascript
 function PaymentServices() {
   const [services, setServices] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { currency, location } = useCurrencyDetection();
 
   useEffect(() => {
     loadPaymentServices();
@@ -546,11 +547,35 @@ function PaymentServices() {
     }
   };
 
+  const getCurrencySymbol = (currencyCode) => {
+    const symbols = {
+      'USD': '$',
+      'EUR': '€',
+      'GBP': '£',
+      'NGN': '₦',
+      'XAF': 'FCFA',
+      'XOF': 'FCFA',
+      'GHS': '₵',
+      'KES': 'KSh',
+      'UGX': 'USh',
+      'TZS': 'TSh',
+      'ZAR': 'R'
+    };
+    return symbols[currencyCode] || currencyCode;
+  };
+
   if (loading) return <div>Loading payment services...</div>;
 
   return (
     <div className="payment-services">
       <h2>Upgrade Your Company Profile</h2>
+
+      {location && (
+        <div className="location-currency-info">
+          <p>📍 Detected location: {location.city}, {location.country}</p>
+          <p>💰 Prices shown in: {currency}</p>
+        </div>
+      )}
 
       {Object.entries(services.services).map(([serviceKey, service]) => (
         <div key={serviceKey} className="service-card">
@@ -558,18 +583,36 @@ function PaymentServices() {
           <p>{service.description}</p>
 
           <div className="pricing">
-            {Object.entries(service.prices.USD).map(([duration, price]) => (
-              <div key={duration} className="price-option">
-                <span className="duration">{duration} days</span>
-                <span className="price">${price}</span>
-                <PaymentButton
-                  service={serviceKey}
-                  duration={parseInt(duration)}
-                  amount={price}
-                  currency="USD"
-                />
-              </div>
-            ))}
+            {service.prices[currency] ? (
+              // Show prices in user's currency if available
+              Object.entries(service.prices[currency]).map(([duration, price]) => (
+                <div key={duration} className="price-option">
+                  <span className="duration">{duration} days</span>
+                  <span className="price">{getCurrencySymbol(currency)}{price}</span>
+                  <PaymentButton
+                    service={serviceKey}
+                    duration={parseInt(duration)}
+                    amount={price}
+                    currency={currency}
+                  />
+                </div>
+              ))
+            ) : (
+              // Fallback to USD if user's currency is not available
+              Object.entries(service.prices.USD).map(([duration, price]) => (
+                <div key={duration} className="price-option">
+                  <span className="duration">{duration} days</span>
+                  <span className="price">${price} USD</span>
+                  <small>Your local currency pricing not available</small>
+                  <PaymentButton
+                    service={serviceKey}
+                    duration={parseInt(duration)}
+                    amount={price}
+                    currency="USD"
+                  />
+                </div>
+              ))
+            )}
           </div>
 
           <ul className="features">
@@ -579,16 +622,120 @@ function PaymentServices() {
           </ul>
         </div>
       ))}
+
+      <div className="currency-selector">
+        <label>Change Currency:</label>
+        <select
+          value={currency}
+          onChange={(e) => {
+            // If using the currency detection hook, you'd call setCurrency here
+            window.location.reload(); // Simple reload for now
+          }}
+        >
+          <option value="USD">USD - US Dollar</option>
+          <option value="EUR">EUR - Euro</option>
+          <option value="GBP">GBP - British Pound</option>
+          <option value="NGN">NGN - Nigerian Naira</option>
+          <option value="XAF">XAF - Central African CFA Franc</option>
+          <option value="GHS">GHS - Ghanaian Cedi</option>
+          <option value="KES">KES - Kenyan Shilling</option>
+          <option value="ZAR">ZAR - South African Rand</option>
+        </select>
+      </div>
     </div>
   );
 }
 ```
 
-### 2. Payment Processing
+### 2. Currency Detection Based on Location
+
+```javascript
+function useCurrencyDetection() {
+  const [currency, setCurrency] = useState('USD');
+  const [location, setLocation] = useState(null);
+
+  // Country to currency mapping
+  const countryCurrencyMap = {
+    'US': 'USD',
+    'CA': 'USD',
+    'GB': 'GBP',
+    'DE': 'EUR',
+    'FR': 'EUR',
+    'IT': 'EUR',
+    'ES': 'EUR',
+    'NG': 'NGN',
+    'GH': 'GHS',
+    'KE': 'KES',
+    'UG': 'UGX',
+    'TZ': 'TZS',
+    'ZA': 'ZAR',
+    'CM': 'XAF',
+    'SN': 'XOF',
+    'CI': 'XOF',
+    'BF': 'XOF',
+    'ML': 'XOF'
+  };
+
+  const detectCurrencyFromLocation = async () => {
+    try {
+      // Try to get user's location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+
+            // Use reverse geocoding to get country
+            const response = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=YOUR_API_KEY`);
+            const data = await response.json();
+
+            if (data.results && data.results[0]) {
+              const countryCode = data.results[0].components.country_code.toUpperCase();
+              const detectedCurrency = countryCurrencyMap[countryCode] || 'USD';
+
+              setCurrency(detectedCurrency);
+              setLocation({
+                country: data.results[0].components.country,
+                countryCode: countryCode,
+                city: data.results[0].components.city || data.results[0].components.town || data.results[0].components.village
+              });
+            }
+          },
+          () => {
+            // Fallback: detect from timezone or browser language
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const language = navigator.language || navigator.languages[0];
+
+            // Simple timezone-based detection
+            if (timezone.includes('Africa/Lagos')) setCurrency('NGN');
+            else if (timezone.includes('Africa/Accra')) setCurrency('GHS');
+            else if (timezone.includes('Africa/Nairobi')) setCurrency('KES');
+            else if (timezone.includes('Africa/Douala')) setCurrency('XAF');
+            else if (timezone.includes('Europe/')) setCurrency('EUR');
+            else if (timezone.includes('America/')) setCurrency('USD');
+            else setCurrency('USD'); // Default
+          }
+        );
+      }
+    } catch (error) {
+      console.warn('Currency detection failed:', error);
+      setCurrency('USD'); // Default fallback
+    }
+  };
+
+  useEffect(() => {
+    detectCurrencyFromLocation();
+  }, []);
+
+  return { currency, location, setCurrency };
+}
+```
+
+### 3. Payment Processing with SwyChr Support
 
 ```javascript
 function PaymentButton({ service, duration, amount, currency, companyId }) {
   const [loading, setLoading] = useState(false);
+  const [paymentProvider, setPaymentProvider] = useState('swychr'); // Default to SwyChr
 
   const initiatePayment = async () => {
     try {
@@ -600,8 +747,8 @@ function PaymentButton({ service, duration, amount, currency, companyId }) {
         currency,
         service,
         duration,
-        provider: 'stripe', // or let user choose
-        returnUrl: `${window.location.origin}/payment/success`,
+        provider: paymentProvider,
+        returnUrl: `${window.location.origin}/payment/success?orderId={ORDER_ID}`,
         cancelUrl: `${window.location.origin}/payment/cancel`
       };
 
@@ -616,9 +763,6 @@ function PaymentButton({ service, duration, amount, currency, companyId }) {
       const result = await response.json();
 
       if (result.success) {
-        // Redirect to payment provider
-        window.location.href = result.data.providerData.checkoutUrl;
-
         // Track payment initiation
         fbq('track', 'InitiateCheckout', {
           content_type: 'service',
@@ -626,6 +770,17 @@ function PaymentButton({ service, duration, amount, currency, companyId }) {
           value: amount,
           currency: currency
         });
+
+        // Handle different payment providers
+        if (paymentProvider === 'swychr' && result.data.paymentUrl) {
+          // For SwyChr, redirect to their payment page
+          window.location.href = result.data.paymentUrl;
+        } else if (result.data.providerData?.checkoutUrl) {
+          // For other providers (Stripe, Flutterwave, etc.)
+          window.location.href = result.data.providerData.checkoutUrl;
+        } else {
+          throw new Error('No payment URL received');
+        }
       } else {
         throw new Error(result.message);
       }
@@ -639,23 +794,38 @@ function PaymentButton({ service, duration, amount, currency, companyId }) {
   };
 
   return (
-    <button
-      onClick={initiatePayment}
-      disabled={loading}
-      className="payment-button"
-    >
-      {loading ? 'Processing...' : `Pay $${amount}`}
-    </button>
+    <div className="payment-container">
+      <div className="provider-selection">
+        <label>Payment Provider:</label>
+        <select
+          value={paymentProvider}
+          onChange={(e) => setPaymentProvider(e.target.value)}
+        >
+          <option value="swychr">SwyChr (Recommended)</option>
+          <option value="stripe">Stripe</option>
+          <option value="flutterwave">Flutterwave</option>
+        </select>
+      </div>
+
+      <button
+        onClick={initiatePayment}
+        disabled={loading}
+        className="payment-button"
+      >
+        {loading ? 'Processing...' : `Pay ${currency} ${amount}`}
+      </button>
+    </div>
   );
 }
 ```
 
-### 3. Payment Success/Failure Handling
+### 4. Payment Success/Failure Handling with SwyChr Support
 
 ```javascript
 function PaymentSuccessPage() {
   const [searchParams] = useSearchParams();
   const [verificationStatus, setVerificationStatus] = useState('verifying');
+  const [paymentDetails, setPaymentDetails] = useState(null);
 
   useEffect(() => {
     verifyPayment();
@@ -663,7 +833,10 @@ function PaymentSuccessPage() {
 
   const verifyPayment = async () => {
     try {
-      const orderId = searchParams.get('order_id');
+      // Get order ID from URL params (can be from SwyChr redirect or our own params)
+      const orderId = searchParams.get('orderId') ||
+                     searchParams.get('order_id') ||
+                     searchParams.get('transaction_id');
 
       if (!orderId) {
         setVerificationStatus('failed');
@@ -678,15 +851,29 @@ function PaymentSuccessPage() {
 
       const result = await response.json();
 
-      if (result.success && result.data.payment.status === 'completed') {
-        setVerificationStatus('success');
+      if (result.success) {
+        setPaymentDetails(result.data.payment);
 
-        // Track successful payment
-        fbq('track', 'Purchase', {
-          value: result.data.payment.amount,
-          currency: result.data.payment.currency,
-          content_type: 'service'
-        });
+        if (result.data.payment.status === 'completed') {
+          setVerificationStatus('success');
+
+          // Track successful payment
+          fbq('track', 'Purchase', {
+            value: result.data.payment.amount,
+            currency: result.data.payment.currency,
+            content_type: 'service'
+          });
+        } else if (result.data.payment.status === 'pending') {
+          // For SwyChr, payment might still be processing
+          setVerificationStatus('pending');
+
+          // Retry verification after a delay
+          setTimeout(() => {
+            verifyPayment();
+          }, 3000);
+        } else {
+          setVerificationStatus('failed');
+        }
       } else {
         setVerificationStatus('failed');
       }
@@ -698,24 +885,85 @@ function PaymentSuccessPage() {
   };
 
   if (verificationStatus === 'verifying') {
-    return <div>Verifying your payment...</div>;
+    return (
+      <div className="payment-verifying">
+        <div className="spinner"></div>
+        <h2>Verifying your payment...</h2>
+        <p>Please wait while we confirm your transaction.</p>
+      </div>
+    );
+  }
+
+  if (verificationStatus === 'pending') {
+    return (
+      <div className="payment-pending">
+        <div className="spinner"></div>
+        <h2>Payment Processing...</h2>
+        <p>Your payment is being processed. This may take a few moments.</p>
+        <button onClick={() => window.location.reload()}>
+          Refresh Status
+        </button>
+      </div>
+    );
   }
 
   if (verificationStatus === 'success') {
     return (
       <div className="payment-success">
+        <div className="success-icon">✅</div>
         <h2>Payment Successful!</h2>
         <p>Your service has been activated. Thank you for your purchase.</p>
-        <Link to="/dashboard">Go to Dashboard</Link>
+
+        {paymentDetails && (
+          <div className="payment-summary">
+            <h3>Payment Summary</h3>
+            <p><strong>Order ID:</strong> {paymentDetails.orderId}</p>
+            <p><strong>Amount:</strong> {paymentDetails.currency} {paymentDetails.amount}</p>
+            <p><strong>Service:</strong> {paymentDetails.metadata?.service}</p>
+          </div>
+        )}
+
+        <div className="action-buttons">
+          <Link to="/dashboard" className="btn-primary">Go to Dashboard</Link>
+          <Link to="/company" className="btn-secondary">View Your Profile</Link>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="payment-failed">
+      <div className="error-icon">❌</div>
       <h2>Payment Failed</h2>
       <p>There was an issue with your payment. Please try again.</p>
-      <Link to="/services">Try Again</Link>
+
+      {paymentDetails && (
+        <div className="error-details">
+          <p><strong>Order ID:</strong> {paymentDetails.orderId}</p>
+          <p><strong>Status:</strong> {paymentDetails.status}</p>
+        </div>
+      )}
+
+      <div className="action-buttons">
+        <Link to="/services" className="btn-primary">Try Again</Link>
+        <Link to="/contact" className="btn-secondary">Contact Support</Link>
+      </div>
+    </div>
+  );
+}
+
+// Payment Cancel Page (for when users cancel payment)
+function PaymentCancelPage() {
+  return (
+    <div className="payment-cancelled">
+      <div className="cancel-icon">⚠️</div>
+      <h2>Payment Cancelled</h2>
+      <p>You cancelled your payment. No charges were made.</p>
+
+      <div className="action-buttons">
+        <Link to="/services" className="btn-primary">Continue Shopping</Link>
+        <Link to="/dashboard" className="btn-secondary">Go to Dashboard</Link>
+      </div>
     </div>
   );
 }
