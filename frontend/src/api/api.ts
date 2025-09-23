@@ -1,4 +1,5 @@
 import instance from './axiosInstance';
+import { Company } from '../types';
 
 export const registerUser = (formData: Record<string, any>) => instance.post('/users/register', formData);
 
@@ -72,3 +73,51 @@ export const incrementContactClicks = (id: string | number) =>
 
 export const logActivity = (formData: Record<string, any>) =>
   instance.post('/activity_logs', formData);
+export const getCompanyBySlug = async (slug: string): Promise<Company> => {
+  try {
+    // The guide specifies this endpoint structure: /api/companies/profile/{slug}
+    // Your axiosInstance likely already includes the /api prefix.
+    const response = await axiosInstance.get<Company>(`/companies/profile/${slug}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching company with slug ${slug}:`, error);
+    // Re-throwing the error lets the component that called this function handle it
+    throw error;
+  }
+};
+export interface CompanySearchFilters {
+  search?: string;
+  category?: string;
+  city?: string;
+  country?: string;
+  latitude?: number;
+  longitude?: number;
+  radius?: number; // in meters
+}
+
+export interface PaginatedCompanyResponse {
+  items: Company[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+// ADD this new function to the end of the file
+export const searchCompanies = async (filters: CompanySearchFilters): Promise<PaginatedCompanyResponse> => {
+  try {
+    const params = new URLSearchParams();
+
+    // This loop cleanly adds only the filters that have a value
+    for (const key in filters) {
+      if (Object.prototype.hasOwnProperty.call(filters, key) && filters[key as keyof CompanySearchFilters]) {
+        params.append(key, String(filters[key as keyof CompanySearchFilters]));
+      }
+    }
+    
+    const response = await axiosInstance.get<PaginatedCompanyResponse>(`/companies?${params.toString()}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error searching for companies:', error);
+    throw error;
+  }
+};

@@ -76,7 +76,7 @@ const Header: React.FC = () => {
                 {t("contact")}
               </Link>
             </li>
-            {/* <li>
+            <li>
               {isAuthenticated ? (
                 <div>
                   {user.role == "USER" ? (
@@ -104,7 +104,7 @@ const Header: React.FC = () => {
                   Sign In
                 </Link>
               )}
-            </li> */}
+            </li> 
           </ul>
         </nav>
 

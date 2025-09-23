@@ -7,7 +7,7 @@ import {
   incrementCompanyViewCount,
   incrementContactClicks,
 } from "../../api/api";
-import { trackCustomEvent } from "../../utils/facebookPixel";
+//import { trackCustomEvent } from "../../utils/facebookPixel";
 
 interface CompanyCardProps {
   company: CompanyData;
@@ -63,7 +63,7 @@ const CompanyCard: React.FC<CompanyCardProps> = ({ company }) => {
             className="text-sm font-medium text-[#3B546A] transition-colors hover:text-[#2A3E50]"
             onClick={() => {
               incrementViewCount(company.id);
-              trackCustomEvent("clickOnCompany", { company: company.name });
+              //trackCustomEvent("clickOnCompany", { company: company.name });
             }}
           >
             View Details
